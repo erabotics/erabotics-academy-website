@@ -6,12 +6,6 @@
       "runtimeExecutable": "python",
       "runtimeArgs": ["-m", "http.server", "5173"],
       "port": 5173
-    },
-    {
-      "name": "erabotics-site-fresh",
-      "runtimeExecutable": "python",
-      "runtimeArgs": ["-m", "http.server", "5174"],
-      "port": 5174
     }
   ]
 }

@@ -55,6 +55,9 @@
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
+.icon { width: 52%; height: 52%; flex-shrink: 0; }
+.product-thumb .icon { width: 30%; height: 30%; }
+
 html { scroll-behavior: smooth; }
 
 body {
