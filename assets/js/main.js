@@ -68,20 +68,37 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Contact / lead forms: no backend yet, show confirmation
+  // Contact / lead forms: submit to Formspree via fetch, show real result
   document.querySelectorAll('form[data-form]').forEach((form) => {
-    form.addEventListener('submit', (e) => {
+    form.addEventListener('submit', async (e) => {
       e.preventDefault();
       const btn = form.querySelector('button[type="submit"]');
       const original = btn ? btn.textContent : '';
       if (btn) {
-        btn.textContent = 'Sent — we’ll be in touch';
+        btn.textContent = 'Sending…';
         btn.disabled = true;
       }
-      form.reset();
+
+      let ok = false;
+      try {
+        const response = await fetch(form.action, {
+          method: 'POST',
+          body: new FormData(form),
+          headers: { Accept: 'application/json' }
+        });
+        ok = response.ok;
+      } catch (err) {
+        ok = false;
+      }
+
+      if (btn) {
+        btn.textContent = ok ? 'Sent — we’ll be in touch' : 'Something went wrong — try again';
+      }
+      if (ok) form.reset();
+
       setTimeout(() => {
         if (btn) { btn.textContent = original; btn.disabled = false; }
-      }, 3500);
+      }, 4000);
     });
   });
 
