@@ -68,7 +68,10 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Contact / lead forms: submit to Formspree via fetch, show real result
+  // Contact / lead forms: submit to Formspree (email) and log a row to
+  // Google Sheets in parallel, show real result
+  const SHEETS_WEBHOOK = 'https://script.google.com/macros/s/AKfycbxMVs1V1PjSnPmYh-KaWnmqgCGjYRC5kY_jtf6qNRXT5Xw5QcZqEjclfsoe9K-PfPHe/exec';
+
   document.querySelectorAll('form[data-form]').forEach((form) => {
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -79,17 +82,19 @@ document.addEventListener('DOMContentLoaded', () => {
         btn.disabled = true;
       }
 
-      let ok = false;
-      try {
-        const response = await fetch(form.action, {
-          method: 'POST',
-          body: new FormData(form),
-          headers: { Accept: 'application/json' }
-        });
-        ok = response.ok;
-      } catch (err) {
-        ok = false;
-      }
+      const emailSend = fetch(form.action, {
+        method: 'POST',
+        body: new FormData(form),
+        headers: { Accept: 'application/json' }
+      }).then((r) => r.ok).catch(() => false);
+
+      const sheetSend = fetch(SHEETS_WEBHOOK, {
+        method: 'POST',
+        mode: 'no-cors',
+        body: new FormData(form)
+      }).catch(() => {});
+
+      const [ok] = await Promise.all([emailSend, sheetSend]);
 
       if (btn) {
         btn.textContent = ok ? 'Sent — we’ll be in touch' : 'Something went wrong — try again';
