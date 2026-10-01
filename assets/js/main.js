@@ -68,10 +68,8 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Contact / lead forms: submit to Formspree (email) and log a row to
-  // Google Sheets in parallel, show real result
-  const SHEETS_WEBHOOK = 'https://script.google.com/macros/s/AKfycbxMVs1V1PjSnPmYh-KaWnmqgCGjYRC5kY_jtf6qNRXT5Xw5QcZqEjclfsoe9K-PfPHe/exec';
-
+  // Contact / lead forms: submit to Formspree (email) and, if the form has
+  // a data-sheet URL, log a copy to a Google Sheet in parallel
   document.querySelectorAll('form[data-form]').forEach((form) => {
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -88,11 +86,10 @@ document.addEventListener('DOMContentLoaded', () => {
         headers: { Accept: 'application/json' }
       }).then((r) => r.ok).catch(() => false);
 
-      const sheetSend = fetch(SHEETS_WEBHOOK, {
-        method: 'POST',
-        mode: 'no-cors',
-        body: new FormData(form)
-      }).catch(() => {});
+      const sheetUrl = form.dataset.sheet;
+      const sheetSend = sheetUrl
+        ? fetch(sheetUrl, { method: 'POST', mode: 'no-cors', body: new FormData(form) }).catch(() => {})
+        : Promise.resolve();
 
       const [ok] = await Promise.all([emailSend, sheetSend]);
 
@@ -104,6 +101,21 @@ document.addEventListener('DOMContentLoaded', () => {
       setTimeout(() => {
         if (btn) { btn.textContent = original; btn.disabled = false; }
       }, 4000);
+    });
+  });
+
+  // Apply buttons on the Adult Courses page: scroll to the application
+  // form and pre-select the course
+  document.querySelectorAll('[data-apply]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const course = btn.getAttribute('data-apply');
+      const target = document.getElementById('apply');
+      const select = document.getElementById('course');
+      if (select) {
+        const match = [...select.options].find((o) => o.value === course);
+        if (match) select.value = course;
+      }
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
   });
 
