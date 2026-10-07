@@ -3,7 +3,7 @@
 (function () {
   const KEY = 'erabotics-cart';
   const MAX_QTY = 999;
-  const SAFE_IMG = /^https:\/\/ampere-electronics\.com\/wp-content\/uploads\/[^\s"'<>\\]+$/;
+  const SAFE_IMG = /^assets\/img\/(parts|products)\/[\w.-]+\.(svg|webp|jpe?g|png)$/;
   const fmt = new Intl.NumberFormat('en-EG');
 
   const read = () => {
@@ -23,9 +23,10 @@
   };
   let items = read();
 
+  const notify = () => document.dispatchEvent(new CustomEvent('cart:change', { detail: { items } }));
   const save = () => {
     try { localStorage.setItem(KEY, JSON.stringify(items)); } catch (e) { /* private mode — cart lasts this page view */ }
-    document.dispatchEvent(new CustomEvent('cart:change', { detail: { items } }));
+    notify();
   };
   const clampQty = (q) => Math.max(1, Math.min(MAX_QTY, Math.floor(Number(q) || 1)));
 
@@ -49,21 +50,25 @@
     // Refresh names/prices from the latest catalog so orders use current prices
     reprice(byId) {
       let changed = false;
+      let imagesChanged = false;
       items = items.filter((i) => {
         const p = byId.get(i.id);
         if (!p) { changed = true; return false; }
         if (p.p !== i.price || p.n !== i.name || (p.s || '') !== i.sku) { i.price = p.p; i.name = p.n; i.sku = p.s || ''; changed = true; }
+        const img = p.img || `assets/img/parts/${p.ic || 'part'}.svg`;
+        if (img !== i.img) { i.img = img; imagesChanged = true; }
         return true;
       });
-      if (changed) save();
-      return changed;
+      if (changed || imagesChanged) save();
+      return changed; // only price/name changes are worth telling the customer about
     },
     open: () => openDrawer()
   };
   window.ErCart = ErCart;
 
-  // Keep tabs in sync
-  window.addEventListener('storage', (e) => { if (e.key === KEY) { items = read(); save(); } });
+  // Keep tabs in sync: re-read another tab's change, but never write it back
+  // (writing here would let two open tabs overwrite each other's carts)
+  window.addEventListener('storage', (e) => { if (e.key === KEY) { items = read(); notify(); } });
 
   // ---------- Header badge ----------
   const updateBadges = () => {

@@ -1,17 +1,31 @@
-"""Sync the ERABOTICS Store catalog from our supplier, Ampere Electronics.
+"""Sync the ERABOTICS Store catalog.
 
-Pulls every product from Ampere's public WooCommerce Store API, applies the
-ERABOTICS markup, and writes the static catalog the Store page reads:
+Pulls every product from the supplier's WooCommerce Store API, applies the
+ERABOTICS markup, assigns each product an image, and writes the static
+catalog the Store page reads:
 
     assets/data/catalog.json          one compact entry per product
     assets/data/details/<n>.json      descriptions, split into small chunks
 
+Images: a product uses our own photo when one exists in
+assets/img/products/ named after its SKU (e.g. 7138.webp / 7138.jpg / 7138.png);
+otherwise it gets the ERABOTICS illustration for its category
+(assets/img/parts/<kind>.svg). Supplier photos are never used.
+
+The supplier API address is kept out of the repository. Set it once in
+scripts/supplier.local.json (git-ignored):
+
+    {"api": "https://<supplier-domain>/wp-json/wc/store/v1"}
+
+or in the CATALOG_SOURCE_API environment variable.
+
 Usage (from the repository root):
 
-    python scripts/sync_ampere.py            # default +20% markup
-    python scripts/sync_ampere.py --markup 25
+    python scripts/sync_catalog.py                 # fetch + default +20% markup
+    python scripts/sync_catalog.py --markup 25
+    python scripts/sync_catalog.py --photos-only   # just pick up new photos, no fetch
 
-Then commit and push the updated assets/data folder to publish the new prices.
+Then commit and push assets/data (and any new photos) to publish.
 Standard library only — no packages to install.
 """
 import argparse
@@ -26,15 +40,75 @@ import urllib.request
 from datetime import datetime, timezone
 from html.parser import HTMLParser
 
-API = 'https://ampere-electronics.com/wp-json/wc/store/v1/products'
 PER_PAGE = 100
 CHUNK = 200  # products per details file
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT = os.path.join(ROOT, 'assets', 'data')
+PHOTOS = os.path.join(ROOT, 'assets', 'img', 'products')
+PHOTO_EXT = ('.webp', '.jpg', '.jpeg', '.png')
+URLISH = re.compile(r'(https?://|www\.|\.com\b|\.net\b|@\w+\.\w)', re.I)
+
+# Category illustration rules: first match wins (matched against name + categories)
+KINDS = [
+    ('ic', r'\b74(hc|hct|ls|xx)?\d{2,3}\b|\bics?\b'),
+    ('module', r'usb to|\bttl\b|rs-?232|rs-?485|can bus'),
+    ('capacitor', r'capacitor'),
+    ('resistor', r'resistor|potentiometer|trimmer|rheostat|varistor'),
+    ('battery', r'batter|18650|li-?ion|lipo|cell holder'),
+    ('fan', r'\bfans?\b|heat ?sink'),
+    ('board', r'arduino|raspberry|esp32|esp8266|esp-|development board|dev board|nodemcu|stm32|\bshields?\b'),
+    ('display', r'\blcd|\boled|\btft|7-seg|display'),
+    ('led', r'\bleds?\b'),
+    ('motor', r'motor|servo|stepper'),
+    ('sensor', r'sensor|ultrasonic|detector|\bpir\b|thermistor|load cell'),
+    ('power', r'power supply|converter|charger|solar|inverter|adapter|transformer|\bbuck\b|\bboost\b|\bsmps\b'),
+    ('printing', r'filament|nozzle|extruder|3d print|hot ?end|\bpla\b|\bpetg\b|\babs\b|\btpu\b|\besun\b'),
+    ('mechanical', r'bearing|linear rail|\brail\b|shaft|coupling|pulley|\bbelt|gear|aluminum profile|lead ?screw|\bcnc\b|cable chain|end mill|engraving|drill bit|collet|chuck|spindle|carriage|lead nut'),
+    ('hardware', r'screw|\bnuts?\b|washer|spacer|standoff|magnet|\bbolt'),
+    ('wire', r'\bwires?\b|cable|crocodile|heat ?shrink|sleev|jumper|wrapping'),
+    ('connector', r'connector|header|terminal|socket|\bplug|\bjack\b|dupont|\bjst\b|d-sub|banana'),
+    ('pcb', r'breadboard|\bpcbs?\b|perf ?board|prototype board|strip ?board'),
+    ('box', r'\bbox(es)?\b|enclosure'),
+    ('tool', r'solder|\btools?\b|tweezer|plier|cutter|screwdriver|\bglue|\btape\b|flux|desolder|\biron\b|knife|wrench|stripper'),
+    ('meter', r'multimeter|voltmeter|ammeter|wattmeter|panel meter|measuring|oscilloscope|\btester\b|\blcr\b|clamp meter'),
+    ('switch', r'breaker|switch|push ?button|\bbuttons?\b|keypad|joystick'),
+    ('module', r'module|driver|relay|\bboard\b'),
+    ('ic', r'\bics?\b|74xx|74hc|transistor|mosfet|diode|regulator|rectifier|crystal|oscillator|microcontroller|\bsmd\b|optocoupler|triac|thyristor|\bfuses?\b|inductor|\bcoil|buzzer|component'),
+]
+KINDS = [(k, re.compile(rx, re.I)) for k, rx in KINDS]
 
 
-def fetch(page, endpoint=''):
-    url = f'{API}{endpoint}?per_page={PER_PAGE}&page={page}' + ('' if endpoint else '&orderby=id&order=asc')
+def kind_for(*texts):
+    # The product name is the strongest signal, then its subcategories, then its group
+    for text in texts:
+        for k, rx in KINDS:
+            if text and rx.search(text):
+                return k
+    return 'part'
+
+
+def own_photo(sku):
+    if not sku:
+        return None
+    for ext in PHOTO_EXT:
+        name = f'{sku}{ext}'
+        if os.path.exists(os.path.join(PHOTOS, name)):
+            return f'assets/img/products/{name}'
+    return None
+
+
+def source_api():
+    api = os.environ.get('CATALOG_SOURCE_API')
+    cfg = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'supplier.local.json')
+    if not api and os.path.exists(cfg):
+        api = json.load(open(cfg, encoding='utf-8')).get('api')
+    if not api:
+        sys.exit('Set the supplier API in scripts/supplier.local.json or CATALOG_SOURCE_API (see the top of this file).')
+    return api.rstrip('/') + '/products'
+
+
+def fetch(api, page, endpoint=''):
+    url = f'{api}{endpoint}?per_page={PER_PAGE}&page={page}' + ('' if endpoint else '&orderby=id&order=asc')
     req = urllib.request.Request(url, headers={'User-Agent': 'ERABOTICS-catalog-sync/1.0', 'Accept': 'application/json'})
     for attempt in range(4):
         try:
@@ -58,7 +132,7 @@ class TextExtractor(HTMLParser):
 
     def flush(self):
         text = re.sub(r'\s+', ' ', ''.join(self.buf)).strip()
-        if text:
+        if text and not URLISH.search(text):  # drop lines carrying links or other shops' addresses
             self.blocks.append(text)
         self.buf = []
 
@@ -93,19 +167,8 @@ def money(minor, unit):
 
 
 def marked_up(value, markup):
-    # Round up to the next whole pound so the markup is never under 20%
+    # Round up to the next whole pound so the markup is never under the target
     return int(math.ceil(round(value * (1 + markup / 100), 4)))
-
-
-def image(p, size):
-    imgs = p.get('images') or []
-    if not imgs:
-        return None
-    img = imgs[0]
-    if size == 'full':
-        return img.get('src')
-    m = re.search(r'(\S+)\s+300w', img.get('srcset') or '')
-    return m.group(1) if m else img.get('thumbnail') or img.get('src')
 
 
 def stock_qty(p):
@@ -113,14 +176,43 @@ def stock_qty(p):
     return int(m.group(1)) if m else None
 
 
+def assign_images(catalog):
+    counts, photos = {}, 0
+    for e in catalog:
+        e['ic'] = kind_for(e['n'], ' '.join(e['c']), ' '.join(e['g']))
+        counts[e['ic']] = counts.get(e['ic'], 0) + 1
+        photo = own_photo(e['s'])
+        if photo:
+            e['img'] = photo
+            photos += 1
+        else:
+            e.pop('img', None)
+    return counts, photos
+
+
+def write_catalog(meta):
+    with open(os.path.join(OUT, 'catalog.json'), 'w', encoding='utf-8') as fh:
+        json.dump(meta, fh, ensure_ascii=False, separators=(',', ':'))
+    return os.path.getsize(os.path.join(OUT, 'catalog.json')) / 1024
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument('--markup', type=float, default=20.0, help='percentage added to the supplier price (default 20)')
+    ap.add_argument('--photos-only', action='store_true', help='re-assign images from assets/img/products without fetching')
     args = ap.parse_args()
 
+    if args.photos_only:
+        meta = json.load(open(os.path.join(OUT, 'catalog.json'), encoding='utf-8'))
+        counts, photos = assign_images(meta['products'])
+        write_catalog(meta)
+        print(f'{photos} products now use our own photos; the rest use illustrations.')
+        return
+
+    api = source_api()
     cats_raw, page, total = [], 1, 1
     while page <= total:
-        items, total = fetch(page, '/categories')
+        items, total = fetch(api, page, '/categories')
         cats_raw.extend(items)
         page += 1
     by_id = {c['id']: c for c in cats_raw}
@@ -133,7 +225,7 @@ def main():
 
     raw, page, total = [], 1, 1
     while page <= total:
-        items, total = fetch(page)
+        items, total = fetch(api, page)
         raw.extend(items)
         print(f'page {page}/{total}: {len(raw)} products', end='\r')
         page += 1
@@ -173,7 +265,6 @@ def main():
             'g': tops,
             'c': cats,
             'p': marked_up(base, args.markup),
-            'img': image(p, 'thumb'),
             'in': bool(p.get('is_in_stock')),
         }
         if rng:
@@ -184,9 +275,10 @@ def main():
         catalog.append(entry)
 
         desc = to_text(p.get('short_description')) + to_text(p.get('description'))
-        details[p['id']] = {'img': image(p, 'full'), 'd': desc[:60]}
+        details[p['id']] = {'d': desc[:60]}
 
     catalog.sort(key=lambda e: e['id'], reverse=True)  # newest first
+    counts, photos = assign_images(catalog)
 
     os.makedirs(os.path.join(OUT, 'details'), exist_ok=True)
     for f in os.listdir(os.path.join(OUT, 'details')):
@@ -210,11 +302,9 @@ def main():
         ],
         'products': catalog,
     }
-    with open(os.path.join(OUT, 'catalog.json'), 'w', encoding='utf-8') as fh:
-        json.dump(meta, fh, ensure_ascii=False, separators=(',', ':'))
-
-    size = os.path.getsize(os.path.join(OUT, 'catalog.json')) / 1024
+    size = write_catalog(meta)
     print(f'Wrote {len(catalog)} products ({size:.0f} KB), {len(groups)} category groups, {len(chunks)} detail chunks, markup +{args.markup:g}%')
+    print(f'Images: {photos} own photos; illustrations by kind: ' + ', '.join(f'{k} {n}' for k, n in sorted(counts.items(), key=lambda kv: -kv[1])))
 
 
 if __name__ == '__main__':

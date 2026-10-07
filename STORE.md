@@ -1,15 +1,31 @@
-# ERABOTICS Store — catalog & orders
-
-The Store page lists our supplier's (Ampere Electronics) catalog with the ERABOTICS markup applied.
+# ERABOTICS Store — catalog, photos & orders
 
 ## Update prices and products
 
-```bash
-python scripts/sync_ampere.py            # +20% markup (default)
-python scripts/sync_ampere.py --markup 25
+One-time setup on the computer that runs the sync: create `scripts/supplier.local.json` (it is git-ignored, so it never reaches GitHub or the website):
+
+```json
+{"api": "https://<supplier-domain>/wp-json/wc/store/v1"}
 ```
 
-This rewrites `assets/data/catalog.json` and `assets/data/details/`. Commit and push them — Vercel publishes the new prices automatically. Prices are a snapshot from the moment you run the script, so run it regularly (e.g. weekly). Carts re-check prices against the latest catalog at checkout.
+Then, from the repository root:
+
+```bash
+python scripts/sync_catalog.py            # +20% markup (default)
+python scripts/sync_catalog.py --markup 25
+```
+
+This rewrites `assets/data/catalog.json` and `assets/data/details/`. Commit and push them to publish. Prices are a snapshot from the moment you run the script, so run it regularly (e.g. weekly). Carts re-check prices against the latest catalog at checkout.
+
+## Product photos
+
+Every product shows an ERABOTICS illustration for its category (`assets/img/parts/`). To use a real photo instead:
+
+1. Photograph the product on a plain white background, square crop, about 800×800 px.
+2. Save it in `assets/img/products/` named after the product's SKU — e.g. `7138.webp` (or `.jpg` / `.png`). The SKU is shown on each product card.
+3. Run `python scripts/sync_catalog.py --photos-only`, then commit and push.
+
+Products with real photos are listed first in the Store's "Featured" order. Only use photos you took yourself or have written permission to use.
 
 ## Orders
 

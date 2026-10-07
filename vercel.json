@@ -7,7 +7,7 @@
       "headers": [
         {
           "key": "Content-Security-Policy",
-          "value": "default-src 'self'; script-src 'self' 'sha256-wfnm3UNsLD1cIxnF6zRvBc++12fRL5F4QkBBwM9S/9o='; style-src 'self'; font-src 'self'; img-src 'self' data: https://ampere-electronics.com; connect-src 'self' https://formspree.io https://script.google.com https://script.googleusercontent.com; form-action 'self' https://formspree.io; frame-ancestors 'none'; frame-src 'none'; worker-src 'none'; manifest-src 'self'; base-uri 'self'; object-src 'none'; upgrade-insecure-requests"
+          "value": "default-src 'self'; script-src 'self' 'sha256-wfnm3UNsLD1cIxnF6zRvBc++12fRL5F4QkBBwM9S/9o='; style-src 'self'; font-src 'self'; img-src 'self' data:; connect-src 'self' https://formspree.io https://script.google.com https://script.googleusercontent.com; form-action 'self' https://formspree.io; frame-ancestors 'none'; frame-src 'none'; worker-src 'none'; manifest-src 'self'; base-uri 'self'; object-src 'none'; upgrade-insecure-requests"
         },
         { "key": "Strict-Transport-Security", "value": "max-age=63072000" },
         { "key": "X-Content-Type-Options", "value": "nosniff" },

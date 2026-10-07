@@ -2,3 +2,4 @@
 .netlify
 
 .vercel
+scripts/supplier.local.json
