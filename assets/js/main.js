@@ -5,6 +5,7 @@
   })();
   const theme = stored || (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
   document.documentElement.setAttribute('data-theme', theme);
+  document.documentElement.classList.add('js');
 })();
 
 function setTheme(theme) {
@@ -12,7 +13,8 @@ function setTheme(theme) {
   try { localStorage.setItem('erabotics-theme', theme); } catch (e) { /* ignore */ }
 }
 
-// Mobile nav toggle
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
 document.addEventListener('DOMContentLoaded', () => {
   const themeToggle = document.querySelector('.theme-toggle');
   if (themeToggle) {
@@ -22,25 +24,41 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // Mobile nav toggle
   const toggle = document.querySelector('.nav-toggle');
   const nav = document.querySelector('.nav');
   if (toggle && nav) {
-    toggle.addEventListener('click', () => {
-      nav.classList.toggle('open');
-    });
+    const setOpen = (open) => {
+      nav.classList.toggle('open', open);
+      document.body.classList.toggle('nav-locked', open);
+      toggle.setAttribute('aria-expanded', String(open));
+      toggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+    };
+    toggle.addEventListener('click', () => setOpen(!nav.classList.contains('open')));
     nav.querySelectorAll('.nav-links a').forEach((link) => {
-      link.addEventListener('click', () => nav.classList.remove('open'));
+      link.addEventListener('click', () => setOpen(false));
     });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && nav.classList.contains('open')) { setOpen(false); toggle.focus(); }
+    });
+    window.matchMedia('(min-width: 1081px)').addEventListener('change', (e) => { if (e.matches) setOpen(false); });
   }
 
   // FAQ accordion
   document.querySelectorAll('.faq-item').forEach((item) => {
     const q = item.querySelector('.faq-q');
     if (!q) return;
+    q.setAttribute('aria-expanded', String(item.classList.contains('open')));
     q.addEventListener('click', () => {
       const isOpen = item.classList.contains('open');
-      item.closest('.faq-list')?.querySelectorAll('.faq-item').forEach((i) => i.classList.remove('open'));
-      if (!isOpen) item.classList.add('open');
+      item.closest('.faq-list')?.querySelectorAll('.faq-item').forEach((i) => {
+        i.classList.remove('open');
+        i.querySelector('.faq-q')?.setAttribute('aria-expanded', 'false');
+      });
+      if (!isOpen) {
+        item.classList.add('open');
+        q.setAttribute('aria-expanded', 'true');
+      }
     });
   });
 
@@ -49,23 +67,25 @@ document.addEventListener('DOMContentLoaded', () => {
   const products = document.querySelectorAll('[data-category]');
   if (chips.length && products.length) {
     chips.forEach((chip) => {
+      chip.setAttribute('aria-pressed', String(chip.classList.contains('active')));
       chip.addEventListener('click', () => {
-        chips.forEach((c) => c.classList.remove('active'));
+        chips.forEach((c) => { c.classList.remove('active'); c.setAttribute('aria-pressed', 'false'); });
         chip.classList.add('active');
+        chip.setAttribute('aria-pressed', 'true');
         const cat = chip.dataset.filter;
         products.forEach((p) => {
-          p.style.display = cat === 'all' || p.dataset.category === cat ? '' : 'none';
+          p.hidden = !(cat === 'all' || p.dataset.category === cat);
         });
       });
     });
   }
 
-  // Header shadow on scroll
+  // Header background on scroll
   const header = document.querySelector('.site-header');
   if (header) {
-    window.addEventListener('scroll', () => {
-      header.style.boxShadow = window.scrollY > 10 ? '0 8px 24px -12px rgba(0,0,0,0.5)' : 'none';
-    });
+    const onScroll = () => header.classList.toggle('is-scrolled', window.scrollY > 8);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
   }
 
   // Contact / lead forms: submit to Formspree (email) and, if the form has
@@ -115,17 +135,21 @@ document.addEventListener('DOMContentLoaded', () => {
         const match = [...select.options].find((o) => o.value === course);
         if (match) select.value = course;
       }
-      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      if (target) target.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
     });
   });
 
   // Set active nav link based on current page (also lights up the
-  // Academy parent when the current page is one of its dropdown tracks)
-  const path = window.location.pathname.split('/').pop() || 'index.html';
+  // Academy parent when the current page is one of its dropdown tracks).
+  // Works with clean URLs (/academy) and file URLs (academy.html).
+  const normalize = (p) => p.replace(/\/+$/, '').split('/').pop().replace(/\.html$/, '').replace(/^index$/, '');
+  const current = normalize(window.location.pathname);
   document.querySelectorAll('.nav-links a, .dropdown a').forEach((a) => {
     const href = a.getAttribute('href');
-    if (href === path) {
+    if (!href || href.startsWith('http') || href.startsWith('#')) return;
+    if (normalize(href.split('#')[0]) === current) {
       a.classList.add('active');
+      a.setAttribute('aria-current', 'page');
       const parentItem = a.closest('.has-dropdown');
       if (parentItem) {
         const parentLink = parentItem.querySelector(':scope > a');
@@ -133,6 +157,42 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
   });
+
+  // Scroll reveal
+  const revealEls = document.querySelectorAll('[data-reveal], [data-reveal-group]');
+  if (!('IntersectionObserver' in window) || reduceMotion) {
+    revealEls.forEach((el) => el.classList.add('is-visible'));
+  } else {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { rootMargin: '0px 0px -10% 0px', threshold: 0.12 });
+    revealEls.forEach((el) => io.observe(el));
+  }
+
+  // Hero: subtle depth on pointer move (fine pointers only)
+  const visual = document.querySelector('.hero-visual');
+  if (visual && !reduceMotion && window.matchMedia('(pointer: fine)').matches) {
+    const layers = visual.querySelectorAll('[data-depth]');
+    let frame = null;
+    visual.closest('.hero').addEventListener('pointermove', (e) => {
+      if (frame) return;
+      frame = requestAnimationFrame(() => {
+        const r = visual.getBoundingClientRect();
+        const x = (e.clientX - (r.left + r.width / 2)) / r.width;
+        const y = (e.clientY - (r.top + r.height / 2)) / r.height;
+        layers.forEach((l) => {
+          const d = parseFloat(l.dataset.depth) * 6;
+          l.style.transform = `translate3d(${(-x * d).toFixed(2)}px, ${(-y * d).toFixed(2)}px, 0)`;
+        });
+        frame = null;
+      });
+    });
+  }
 });
 
 // ---------- FAQ chat widget (pre-written Q&A, no external AI) ----------
@@ -176,14 +236,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const widget = document.createElement('div');
     widget.className = 'chat-widget';
     widget.innerHTML =
-      '<button class="chat-fab" aria-label="Ask a question about ERABOTICS">' +
-        '<svg class="chat-fab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>' +
-        '<svg class="chat-fab-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"></path></svg>' +
+      '<button class="chat-fab" type="button" aria-label="Ask a question about ERABOTICS" aria-expanded="false" aria-controls="chat-panel">' +
+        '<svg class="chat-fab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>' +
+        '<svg class="chat-fab-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg>' +
       '</button>' +
-      '<div class="chat-panel">' +
+      '<div class="chat-panel" id="chat-panel" role="dialog" aria-label="Quick answers about ERABOTICS">' +
         '<div class="chat-header"><span>Ask ERABOTICS</span><span class="chat-header-sub">Quick answers, instantly</span></div>' +
         '<div class="chat-body">' +
-          '<div class="chat-messages"><div class="chat-msg chat-msg-bot">Hi! Pick a question below and I’ll answer right away.</div></div>' +
+          '<div class="chat-messages" aria-live="polite"><div class="chat-msg chat-msg-bot">Hi! Pick a question below and I’ll answer right away.</div></div>' +
           '<div class="chat-questions"></div>' +
         '</div>' +
       '</div>';
@@ -192,6 +252,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const messagesEl = widget.querySelector('.chat-messages');
     const questionsEl = widget.querySelector('.chat-questions');
     const bodyEl = widget.querySelector('.chat-body');
+    const fab = widget.querySelector('.chat-fab');
 
     FAQS.forEach((item) => {
       const chip = document.createElement('button');
@@ -215,8 +276,13 @@ document.addEventListener('DOMContentLoaded', () => {
       questionsEl.appendChild(chip);
     });
 
-    widget.querySelector('.chat-fab').addEventListener('click', () => {
-      widget.classList.toggle('open');
+    const setOpen = (open) => {
+      widget.classList.toggle('open', open);
+      fab.setAttribute('aria-expanded', String(open));
+    };
+    fab.addEventListener('click', () => setOpen(!widget.classList.contains('open')));
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && widget.classList.contains('open')) { setOpen(false); fab.focus(); }
     });
   });
 })();
