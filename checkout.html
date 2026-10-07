@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<script>(function(){var d=document.documentElement;d.classList.add('js');try{var t=localStorage.getItem('erabotics-theme')||(window.matchMedia('(prefers-color-scheme: light)').matches?'light':'dark');d.setAttribute('data-theme',t);}catch(e){d.setAttribute('data-theme','dark');}})();</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Checkout — ERABOTICS Store</title>
+<meta name="description" content="Review your ERABOTICS Store cart and place your order — cash on delivery or InstaPay.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#070b14">
+<link rel="icon" type="image/png" href="assets/img/erabotics-mark.png">
+<link rel="preload" href="assets/fonts/Inter-latin-1.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/SpaceGrotesk-latin-5.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="assets/css/fonts.css">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<svg class="sprite" aria-hidden="true">
+<symbol id="icon-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></symbol>
+<symbol id="icon-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></symbol>
+<symbol id="icon-cart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h2l2.2 10.2a1.5 1.5 0 0 0 1.5 1.2h8.6a1.5 1.5 0 0 0 1.5-1.1L20.5 8H6.2"/><circle cx="9.5" cy="19.5" r="1.3"/><circle cx="17" cy="19.5" r="1.3"/></symbol>
+<symbol id="icon-trash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12M9 7V4h6v3"/></symbol>
+<symbol id="icon-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+<symbol id="icon-external" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></symbol>
+<symbol id="icon-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></symbol>
+<symbol id="icon-info" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></symbol>
+<symbol id="icon-facebook" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 21v-7.5H17l.5-3h-3V8.6c0-.9.4-1.6 1.7-1.6h1.4V4.3c-.6-.1-1.5-.2-2.4-.2-2.5 0-4 1.5-4 4.1v2.3H8.5v3h2.7V21"/></symbol>
+<symbol id="icon-instagram" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="3.8"/><circle cx="17.2" cy="6.8" r="0.9" fill="currentColor" stroke="none"/></symbol>
+<symbol id="icon-whatsapp" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3.6 20.4 4.9 16A8.6 8.6 0 1 1 8 19.2l-4.4 1.2Z"/><path d="M9.2 8.4c-.3.6-.4 1.4.1 2.6a8 8 0 0 0 3.8 3.7c1.2.5 2 .4 2.6 0l.5-.9-1.8-1-.9.7a5 5 0 0 1-2.2-2.2l.7-.9-1-1.8-.9.4Z"/></symbol>
+<symbol id="icon-trophy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8M12 17v4M7 4h10v3a5 5 0 0 1-10 0V4Z"/><path d="M7 5H4a1 1 0 0 0-1 1v1a4 4 0 0 0 4 4M17 5h3a1 1 0 0 1 1 1v1a4 4 0 0 1-4 4"/></symbol>
+<symbol id="icon-rocket" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2c2.5 2 4 5.5 4 9 0 2-.5 3.5-1 4.5l-3 3-3-3c-.5-1-1-2.5-1-4.5 0-3.5 1.5-7 4-9Z"/><circle cx="12" cy="10" r="1.6"/><path d="M9 15.5 6 18M15 15.5l3 2.5M10 19l-1 3M14 19l1 3"/></symbol>
+<symbol id="icon-brain" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4a3 3 0 0 0-3 3v1a3 3 0 0 0-1 5.5A3 3 0 0 0 8 18a3 3 0 0 0 3-3V6a2 2 0 0 0-2-2Z"/><path d="M15 4a3 3 0 0 1 3 3v1a3 3 0 0 1 1 5.5A3 3 0 0 1 16 18a3 3 0 0 1-3-3V6a2 2 0 0 1 2-2Z"/></symbol>
+<symbol id="icon-tools" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2-2 2.5-2.5Z"/></symbol>
+<symbol id="icon-mic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v4M9 22h6"/></symbol>
+<symbol id="icon-school" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 2 8l10 5 10-5-10-5Z"/><path d="M6 11v5c0 1.5 2.7 3 6 3s6-1.5 6-3v-5M22 8v6"/></symbol>
+<symbol id="icon-robot" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="9" width="14" height="10" rx="2"/><circle cx="9.5" cy="14" r="1.1" fill="currentColor" stroke="none"/><circle cx="14.5" cy="14" r="1.1" fill="currentColor" stroke="none"/><path d="M12 9V6M9 3h6M4 12H2M22 12h-2"/></symbol>
+<symbol id="icon-camera" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l1.5-2h7L17 8h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1Z"/><circle cx="12" cy="13" r="3.2"/></symbol>
+<symbol id="icon-certificate" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="13" rx="1.5"/><path d="M8 7h8M8 10h8M8 13h5"/><path d="M9 16v5l3-2 3 2v-5"/></symbol>
+<symbol id="icon-building" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="1"/><path d="M8 7h2M14 7h2M8 11h2M14 11h2M8 15h2M14 15h2M10 21v-4h4v4"/></symbol>
+<symbol id="icon-plug" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2v5M15 2v5M7 7h10v3a5 5 0 0 1-10 0V7Z"/><path d="M12 15v4M9 22h6"/></symbol>
+<symbol id="icon-wrench" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 5.5a3.5 3.5 0 0 1-4.9 3.2L7 17.8a2 2 0 1 1-2.8-2.8l9.1-8.1A3.5 3.5 0 1 1 20 5.5Z"/></symbol>
+<symbol id="icon-graduation" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9 12 4l10 5-10 5-10-5Z"/><path d="M6 11.5V16c0 1.7 2.7 3 6 3s6-1.3 6-3v-4.5M22 9v6"/></symbol>
+<symbol id="icon-globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.5 4 6 4 9s-1.5 6.5-4 9c-2.5-2.5-4-6-4-9s1.5-6.5 4-9Z"/></symbol>
+<symbol id="icon-handshake" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12l4-4 4 3 3-2 4 4-3 3-3-2-5 4-4-3Z"/><path d="M13 11l3-3 4 4-3 3"/></symbol>
+<symbol id="icon-book" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5c2-1 5-1 8 0v14c-3-1-6-1-8 0V5Z"/><path d="M20 5c-2-1-5-1-8 0v14c3-1 6-1 8 0V5Z"/></symbol>
+<symbol id="icon-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></symbol>
+<symbol id="icon-person" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.5"/><path d="M5 21a7 7 0 0 1 14 0"/></symbol>
+<symbol id="icon-factory" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21V11l5 3v-3l5 3V8l6 3.5V21H3Z"/><path d="M8 21v-4M13 21v-4"/></symbol>
+<symbol id="icon-chart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M4 20h16"/></symbol>
+<symbol id="icon-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></symbol>
+<symbol id="icon-code" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m9 8-5 4 5 4M15 8l5 4-5 4"/></symbol>
+<symbol id="icon-arm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4l3-6 4 2 5-8"/><circle cx="20" cy="7" r="2"/><circle cx="8" cy="20" r="1.5"/></symbol>
+<symbol id="icon-chip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="7" width="10" height="10" rx="1.5"/><path d="M9 2v3M15 2v3M9 19v3M15 19v3M2 9h3M2 15h3M19 9h3M19 15h3"/></symbol>
+<symbol id="icon-puzzle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4h3a1.5 1.5 0 0 1 0 3 1.5 1.5 0 0 0 0 3h4v4a1.5 1.5 0 0 1-3 0 1.5 1.5 0 0 0-3 0v4H6a1 1 0 0 1-1-1v-4a1.5 1.5 0 0 0 0-3 1.5 1.5 0 0 1 0-3V5a1 1 0 0 1 1-1h3Z"/></symbol>
+<symbol id="icon-mail" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></symbol>
+<symbol id="icon-phone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h3l2 5-2 1a11 11 0 0 0 6 6l1-2 5 2v3a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2Z"/></symbol>
+<symbol id="icon-pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-6.5 7-11.5A7 7 0 0 0 5 9.5C5 14.5 12 21 12 21Z"/><circle cx="12" cy="9.5" r="2.3"/></symbol>
+<symbol id="icon-bulb" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 21h4M8 12a4 4 0 1 1 8 0c0 1.8-1 2.8-2 4-.4.5-.5.8-.5 1H8.5c0-.2-.1-.5-.5-1-1-1.2-2-2.2-2-4Z"/></symbol>
+<symbol id="icon-box" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8 12 4l9 4-9 4-9-4Z"/><path d="M3 8v9l9 4 9-4V8M12 12v9"/></symbol>
+<symbol id="icon-toy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="6" height="6" rx="1"/><rect x="14" y="10" width="6" height="6" rx="1"/><rect x="9" y="4" width="6" height="6" rx="1"/></symbol>
+<symbol id="icon-car" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 16v-3l2-4h12l2 4v3"/><path d="M4 16h16v2a1 1 0 0 1-1 1h-1a1 1 0 0 1-1-1v-1H7v1a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-2Z"/><circle cx="8" cy="17" r="1.3" fill="currentColor" stroke="none"/><circle cx="16" cy="17" r="1.3" fill="currentColor" stroke="none"/></symbol>
+<symbol id="icon-lightning" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z"/></symbol>
+<symbol id="icon-laptop" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="10" rx="1"/><path d="M2 19h20"/></symbol>
+<symbol id="icon-compass" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m15 9-2 6-6 2 2-6 6-2Z"/></symbol>
+<symbol id="icon-monitor" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="12" rx="1.5"/><path d="M9 20h6M12 16v4"/></symbol>
+<symbol id="icon-antenna" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22v-9M8 5a6 6 0 0 1 8 0M5 2a10 10 0 0 1 14 0"/><circle cx="12" cy="13" r="2"/></symbol>
+<symbol id="icon-gear" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/></symbol>
+<symbol id="icon-repeat" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h13l-3-3M20 17H7l3 3"/></symbol>
+<symbol id="icon-battery" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="8" width="17" height="8" rx="1.5"/><path d="M21 10v4M6 11v2M10 11v2"/></symbol>
+</svg>
+
+
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header">
+  <nav class="nav" aria-label="Main">
+    <a href="/" class="brand" aria-label="ERABOTICS Academy — home">
+      <img src="assets/img/erabotics-mark.png" alt="" class="brand-mark" width="34" height="34">
+      <span class="brand-name"><b>ERA</b>botics</span>
+      <span class="brand-tag">Academy</span>
+    </a>
+    <ul class="nav-links" id="site-menu">
+      <li><a href="/">Home</a></li>
+      <li class="has-dropdown">
+        <a href="/academy">Academy <svg class="chev" aria-hidden="true"><use href="#icon-chevron"></use></svg></a>
+        <div class="dropdown">
+          <a href="/programs"><span class="dd-icon"><svg aria-hidden="true"><use href="#icon-book"></use></svg></span><span class="dd-title">Programs &amp; Courses</span><span class="dd-desc">Five stages, ages 4–18, with pricing</span></a>
+          <a href="/robotics"><span class="dd-icon"><svg aria-hidden="true"><use href="#icon-robot"></use></svg></span><span class="dd-title">Robotics</span><span class="dd-desc">Mechanics, electronics &amp; control</span></a>
+          <a href="/ai"><span class="dd-icon"><svg aria-hidden="true"><use href="#icon-brain"></use></svg></span><span class="dd-title">Artificial Intelligence</span><span class="dd-desc">From ML fundamentals to vision</span></a>
+          <a href="/entrepreneurship"><span class="dd-icon"><svg aria-hidden="true"><use href="#icon-rocket"></use></svg></span><span class="dd-title">Entrepreneurship</span><span class="dd-desc">Every invention gets pitched</span></a>
+          <span class="dd-sep" aria-hidden="true"></span>
+          <a href="/adults"><span class="dd-icon"><svg aria-hidden="true"><use href="#icon-laptop"></use></svg></span><span class="dd-title">Adult Courses</span><span class="dd-desc">Programming, Data &amp; AI for adults</span></a>
+        </div>
+      </li>
+      <li><a href="/projects">Projects</a></li>
+      <li><a href="/competitions">Competitions</a></li>
+      <li><a href="/store">Store</a></li>
+      <li><a href="/about">About Us</a></li>
+      <li><a href="/contact">Contact</a></li>
+      <li class="nav-mobile-only">
+        <div>
+          <a href="https://docs.google.com/forms/d/e/1FAIpQLSeYbHpN2yIw3EtfcKXdNmelmPlu9qG-Z6CjBCL_OzPG94kWug/viewform" class="btn btn-primary" target="_blank" rel="noopener">Join the Academy <svg class="ext" aria-hidden="true"><use href="#icon-external"></use></svg></a>
+          <p class="fine-print">academy@eraboticseg.com · +20 101 539 7943</p>
+        </div>
+      </li>
+    </ul>
+    <div class="nav-cta">
+      <a href="/checkout" class="cart-link" aria-label="Cart, 0 items"><svg aria-hidden="true"><use href="#icon-cart"></use></svg><span class="cart-count" hidden>0</span></a>
+      <button class="theme-toggle" type="button" aria-label="Switch color theme">
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path></svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"></path></svg>
+      </button>
+      <a href="https://docs.google.com/forms/d/e/1FAIpQLSeYbHpN2yIw3EtfcKXdNmelmPlu9qG-Z6CjBCL_OzPG94kWug/viewform" class="btn btn-primary btn-sm btn-join" target="_blank" rel="noopener">Join the Academy <svg class="ext" aria-hidden="true"><use href="#icon-external"></use></svg></a>
+      <button class="nav-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="site-menu"><span></span><span></span><span></span></button>
+    </div>
+  </nav>
+</header>
+
+<main id="main">
+
+  <section class="page-hero page-hero-compact">
+    <div class="container">
+      <div class="breadcrumb"><a href="/">Home</a> / <a href="/store">Store</a> / Checkout</div>
+      <div class="eyebrow">ERABOTICS Store</div>
+      <h1>Checkout</h1>
+      <p>Send us your order — we'll call to confirm stock, delivery and the final total before anything is charged.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container checkout-grid">
+      <div class="form-card">
+        <div id="checkout-form-wrap">
+          <h2 class="form-title">Your details</h2>
+          <p class="form-intro">We use these only to confirm and deliver your order.</p>
+          <form id="checkout-form" action="https://formspree.io/f/mjykprzv" method="POST" novalidate>
+            <input type="hidden" name="_subject" value="New store order — eraboticseg.com">
+            <input type="hidden" name="form" value="Store order">
+            <input type="hidden" name="order_id">
+            <input type="hidden" name="order">
+            <input type="hidden" name="order_total">
+            <input type="text" name="_gotcha" class="hp-field" tabindex="-1" autocomplete="off" aria-hidden="true">
+            <div class="form-row">
+              <div class="field">
+                <label for="co-name">Full name</label>
+                <input type="text" id="co-name" name="name" autocomplete="name" required maxlength="120">
+              </div>
+              <div class="field">
+                <label for="co-phone">Phone / WhatsApp</label>
+                <input type="tel" id="co-phone" name="phone" autocomplete="tel" placeholder="+20 ..." required pattern="[0-9+ \-\(\)]{8,20}" maxlength="20">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="field">
+                <label for="co-email">Email <span class="optional">(optional)</span></label>
+                <input type="email" id="co-email" name="email" autocomplete="email" maxlength="160">
+              </div>
+              <div class="field">
+                <label for="co-fulfil">Delivery</label>
+                <select id="co-fulfil" name="fulfilment" required>
+                  <option value="Delivery">Deliver to my address</option>
+                  <option value="Pick up">Pick up — we'll confirm the location</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row" data-delivery>
+              <div class="field">
+                <label for="co-city">City / Governorate</label>
+                <input type="text" id="co-city" name="city" autocomplete="address-level2" required maxlength="80">
+              </div>
+              <div class="field">
+                <label for="co-address">Address</label>
+                <input type="text" id="co-address" name="address" autocomplete="street-address" placeholder="Street, building, floor" required maxlength="240">
+              </div>
+            </div>
+            <fieldset class="field pay-options">
+              <legend>Payment</legend>
+              <label class="radio-card"><input type="radio" name="payment" value="Cash on delivery" checked><span><strong>Cash on delivery</strong><small>Pay when you receive your order</small></span></label>
+              <label class="radio-card"><input type="radio" name="payment" value="InstaPay"><span><strong>InstaPay</strong><small>We'll send transfer details when we confirm</small></span></label>
+            </fieldset>
+            <div class="field">
+              <label for="co-notes">Notes <span class="optional">(optional)</span></label>
+              <textarea id="co-notes" name="message" maxlength="1500" placeholder="Project details, part alternatives, preferred call time..."></textarea>
+            </div>
+            <p class="form-error" id="co-error" role="alert" hidden></p>
+            <button type="submit" class="btn btn-primary btn-block">Place order</button>
+            <p class="fine-print co-terms">Placing an order sends it to our team — no payment is taken online.</p>
+          </form>
+        </div>
+        <div id="checkout-done" class="checkout-done" hidden tabindex="-1">
+          <div class="feature-icon"><svg class="icon" aria-hidden="true"><use href="#icon-certificate"></use></svg></div>
+          <h2 class="form-title">Order received</h2>
+          <p>Thank you! Your order reference is <strong id="co-ref"></strong>. We'll call you on the number you gave us to confirm stock, delivery and the final total.</p>
+          <a href="/store" class="btn btn-outline">Back to the Store</a>
+        </div>
+      </div>
+
+      <aside class="order-summary" aria-labelledby="summary-title">
+        <div class="os-head"><h2 id="summary-title">Order summary</h2><a href="/store" class="text-link">Edit in Store</a></div>
+        <div id="co-lines"></div>
+        <div class="os-total"><span>Subtotal</span><strong id="co-total">0 EGP</strong></div>
+        <p class="fine-print">Delivery cost, if any, is confirmed by phone. Prices include the current catalog price for each part.</p>
+      </aside>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="/" class="brand" aria-label="ERABOTICS Academy — home">
+          <img src="assets/img/erabotics-mark.png" alt="" class="brand-mark" width="34" height="34">
+          <span class="brand-name"><b>ERA</b>botics</span>
+          <span class="brand-tag">Academy</span>
+        </a>
+        <p>An education-and-technology ecosystem teaching the next generation to build, create, and innovate through Robotics and AI — with entrepreneurial thinking built into every project.</p>
+        <div class="social-row">
+          <a href="https://www.facebook.com/profile.php?id=61594808093657" aria-label="ERABOTICS on Facebook" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#icon-facebook"></use></svg></a>
+          <a href="https://instagram.com/erabotics" aria-label="ERABOTICS on Instagram" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#icon-instagram"></use></svg></a>
+          <a href="https://wa.me/201015397943" aria-label="Message ERABOTICS on WhatsApp" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#icon-whatsapp"></use></svg></a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Academy</h4>
+        <ul>
+          <li><a href="/programs">Programs &amp; Courses</a></li>
+          <li><a href="/robotics">Robotics</a></li>
+          <li><a href="/ai">Artificial Intelligence</a></li>
+          <li><a href="/entrepreneurship">Entrepreneurship</a></li>
+          <li><a href="/adults">Adult Courses</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <ul>
+          <li><a href="/about">About Us</a></li>
+          <li><a href="/projects">Student Projects</a></li>
+          <li><a href="/competitions">Competitions</a></li>
+          <li><a href="/partners">Schools &amp; Partners</a></li>
+          <li><a href="/store">Store</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <ul>
+          <li class="contact-item"><svg aria-hidden="true"><use href="#icon-mail"></use></svg><a href="mailto:academy@eraboticseg.com">academy@eraboticseg.com</a></li>
+          <li class="contact-item"><svg aria-hidden="true"><use href="#icon-phone"></use></svg><div><a href="tel:+201015397943">+20 101 539 7943</a><a href="tel:+201113337137">+20 111 333 7137</a></div></li>
+          <li class="contact-item"><svg aria-hidden="true"><use href="#icon-pin"></use></svg><span>Egypt</span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 ERABOTICS. All rights reserved.</span>
+      <nav aria-label="Legal"><a href="#">Privacy Policy</a><a href="#">Terms</a></nav>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/js/main.js"></script>
+<script src="assets/js/cart.js"></script>
+<script src="assets/js/checkout.js"></script>
+</body>
+</html>
