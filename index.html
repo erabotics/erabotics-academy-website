@@ -78,25 +78,29 @@
       <span class="brand-tag">Academy</span>
     </a>
     <ul class="nav-links" id="site-menu">
-      <li><a href="/">Home</a></li>
       <li class="has-dropdown">
-        <a href="/academy">Academy <svg class="chev" aria-hidden="true"><use href="#icon-chevron"></use></svg></a>
+        <a href="/programs">Programs <svg class="chev" aria-hidden="true"><use href="#icon-chevron"></use></svg></a>
         <div class="dropdown">
-          <a href="/programs"><span class="dd-icon"><svg aria-hidden="true"><use href="#icon-book"></use></svg></span><span class="dd-title">Programs &amp; Courses</span><span class="dd-desc">Five stages, ages 4–18, with pricing</span></a>
+          <a href="/programs"><span class="dd-icon"><svg aria-hidden="true"><use href="#icon-book"></use></svg></span><span class="dd-title">Programs &amp; Pricing</span><span class="dd-desc">Five stages, ages 4–18</span></a>
+          <a href="/academy"><span class="dd-icon"><svg aria-hidden="true"><use href="#icon-school"></use></svg></span><span class="dd-title">The Academy</span><span class="dd-desc">How the pathway is taught</span></a>
           <a href="/robotics"><span class="dd-icon"><svg aria-hidden="true"><use href="#icon-robot"></use></svg></span><span class="dd-title">Robotics</span><span class="dd-desc">Mechanics, electronics &amp; control</span></a>
           <a href="/ai"><span class="dd-icon"><svg aria-hidden="true"><use href="#icon-brain"></use></svg></span><span class="dd-title">Artificial Intelligence</span><span class="dd-desc">From ML fundamentals to vision</span></a>
           <a href="/entrepreneurship"><span class="dd-icon"><svg aria-hidden="true"><use href="#icon-rocket"></use></svg></span><span class="dd-title">Entrepreneurship</span><span class="dd-desc">Every invention gets pitched</span></a>
+          <a href="/projects"><span class="dd-icon"><svg aria-hidden="true"><use href="#icon-tools"></use></svg></span><span class="dd-title">Student Projects</span><span class="dd-desc">What students build each week</span></a>
           <span class="dd-sep" aria-hidden="true"></span>
           <a href="/adults"><span class="dd-icon"><svg aria-hidden="true"><use href="#icon-laptop"></use></svg></span><span class="dd-title">Adult Courses</span><span class="dd-desc">Programming, Data &amp; AI for adults</span></a>
         </div>
       </li>
-      <li><a href="/projects">Projects</a></li>
+      <li><a href="/#how-it-works" data-section="how-it-works">How It Works</a></li>
       <li><a href="/competitions">Competitions</a></li>
       <li><a href="/store">Store</a></li>
-      <li><a href="/about">About Us</a></li>
-      <li><a href="/contact">Contact</a></li>
       <li class="nav-mobile-only">
         <div>
+          <ul class="nav-secondary" aria-label="More">
+            <li><a href="/partners">Schools &amp; Partners</a></li>
+            <li><a href="/about">About Us</a></li>
+            <li><a href="/contact">Contact</a></li>
+          </ul>
           <a href="https://docs.google.com/forms/d/e/1FAIpQLSeYbHpN2yIw3EtfcKXdNmelmPlu9qG-Z6CjBCL_OzPG94kWug/viewform" class="btn btn-primary" target="_blank" rel="noopener">Join the Academy <svg class="ext" aria-hidden="true"><use href="#icon-external"></use></svg></a>
           <p class="fine-print">academy@eraboticseg.com · +20 101 539 7943</p>
         </div>
@@ -116,32 +120,33 @@
 
 <main id="main">
 
-  <!-- HERO -->
+  <!-- 1 · WHAT IS ERABOTICS -->
   <section class="hero tech-grid">
     <div class="container">
       <div class="hero-grid">
         <div class="hero-copy">
           <div class="eyebrow">Robotics · Coding · AI · Engineering</div>
-          <h1>Building Tomorrow's <span class="accent">Engineers</span>, Today</h1>
-          <p class="lead">ERABOTICS Academy brings hands-on robotics, coding, and AI courses to your school — real projects, real hardware, a finished invention every week.</p>
+          <h1 class="hero-title"><span class="line"><span>Building</span></span> <span class="line"><span>Tomorrow's</span></span> <span class="line"><span class="accent">Engineers,</span></span> <span class="line"><span>Today</span></span></h1>
+          <p class="lead">ERABOTICS Academy brings hands-on robotics, coding, and AI courses to schools — real projects, real hardware, and a finished invention every week.</p>
           <div class="hero-actions">
-            <a href="/contact" class="btn btn-primary">Enroll with your school <svg aria-hidden="true"><use href="#icon-arrow"></use></svg></a>
-            <a href="/programs" class="btn btn-outline">See programs &amp; pricing</a>
+            <a href="https://docs.google.com/forms/d/e/1FAIpQLSeYbHpN2yIw3EtfcKXdNmelmPlu9qG-Z6CjBCL_OzPG94kWug/viewform" class="btn btn-primary btn-lg" target="_blank" rel="noopener">Join the Academy <svg class="ext" aria-hidden="true"><use href="#icon-external"></use></svg></a>
+            <a href="#programs" class="btn btn-outline btn-lg">Explore Programs <svg aria-hidden="true"><use href="#icon-arrow"></use></svg></a>
           </div>
         </div>
 
-        <div class="hero-visual" role="img" aria-label="Illustration of the ERABOTICS learning system: a robot head at the centre of circuit traces, with labels for a Robot Builders project, the ages 4 to 18 pathway, and Demo Day">
+        <div class="hero-visual" role="img" aria-label="Illustration of the ERABOTICS learning system: a robot head at the centre of circuit traces, with live sensor, motor and vision readouts, the five-stage pathway, and Demo Day">
           <div class="hv-frame" data-depth="0.4">
             <div class="hv-bar mono" aria-hidden="true">
               <span class="dots"><i></i><i></i><i></i></span>
               <span>ERA · LAB / FIG. 01</span>
+              <span class="hv-coords" data-coords>X 000.0 · Y 000.0</span>
             </div>
             <svg class="hv-svg" viewBox="0 0 560 560" fill="none" aria-hidden="true">
               <circle class="ring" cx="280" cy="268" r="206" stroke-width="1"/>
               <g class="spin"><circle class="tick" cx="280" cy="268" r="190" stroke-width="6" stroke-dasharray="1.2 10.74" opacity="0.5"/></g>
               <circle class="trace-accent" cx="280" cy="268" r="150" stroke-width="1" stroke-dasharray="3 6" opacity="0.55"/>
               <circle class="ring" cx="280" cy="268" r="122" stroke-width="1"/>
-              <!-- circuit traces -->
+              <g class="scan"><path d="M280 268 L280 118" class="trace-accent" stroke-width="1.5" opacity="0.7"/><path d="M280 268 L280 118 A150 150 0 0 1 386 162 Z" class="sweep"/></g>
               <g class="trace" stroke-width="1.2">
                 <path d="M280 62V40H440V24"/>
                 <path d="M486 268H516V392H560"/>
@@ -166,7 +171,6 @@
                 <circle class="node" cx="426" cy="122" r="4"/>
                 <circle class="node" cx="134" cy="414" r="4"/>
               </g>
-              <!-- crosshairs -->
               <g class="tick" stroke-width="1" opacity="0.7">
                 <path d="M30 70h12M36 64v12"/><path d="M518 70h12M524 64v12"/>
                 <path d="M30 530h12M36 524v12"/><path d="M518 530h12M524 524v12"/>
@@ -179,6 +183,11 @@
             <div class="hv-core" data-depth="1">
               <img src="assets/img/erabotics-academy-mark.png" alt="" width="381" height="381">
             </div>
+            <dl class="hv-telemetry mono" aria-hidden="true">
+              <div><dt>Sensor.in</dt><dd data-tele="dist">24.6 cm</dd></div>
+              <div><dt>Motor.L / R</dt><dd data-tele="motor">62% / 58%</dd></div>
+              <div><dt>Vision</dt><dd><span class="live"></span>Tracking</dd></div>
+            </dl>
           </div>
           <div class="hv-chip c-1" data-depth="1.6">
             <span class="mono">Stage 02 · Robot Builders</span>
@@ -190,10 +199,6 @@
             <span class="mono">The pathway</span>
             <strong>Ages 4 → 18</strong>
             <div class="meta"><span>5 STAGES</span><span>1 JOURNEY</span></div>
-          </div>
-          <div class="hv-chip c-3" data-depth="1.2">
-            <span class="mono"><span class="live"></span>Every 8 weeks</span>
-            <strong>Demo Day for parents</strong>
           </div>
         </div>
       </div>
@@ -218,13 +223,20 @@
     </div>
   </section>
 
-  <!-- WHAT ERA MEANS -->
+  <div class="ticker" aria-hidden="true">
+    <div class="ticker-track">
+      <span>Robots</span><i></i><span>Coding</span><i></i><span>AI</span><i></i><span>Engineering</span><i></i><span>Innovation</span><i></i><span>Entrepreneurship</span><i></i>
+      <span>Robots</span><i></i><span>Coding</span><i></i><span>AI</span><i></i><span>Engineering</span><i></i><span>Innovation</span><i></i><span>Entrepreneurship</span><i></i>
+    </div>
+  </div>
+
+  <!-- 2 · WHY IS IT DIFFERENT -->
   <section class="section era is-ink tech-grid" aria-labelledby="era-title">
     <div class="container">
       <div class="section-head-split" data-reveal>
         <div>
           <div class="eyebrow"><span class="idx">01</span> Our name</div>
-          <h2 id="era-title">What ERA stands for</h2>
+          <h2 id="era-title" class="display-title">What ERA<br>stands for</h2>
         </div>
         <p>ERABOTICS isn't just a name — it's what we believe students need: to build, to understand AI, and to think like innovators.</p>
       </div>
@@ -252,84 +264,343 @@
     </div>
   </section>
 
-  <!-- ACADEMY PATHWAY -->
-  <section class="section" aria-labelledby="pathway-title">
+  <!-- 3 · WHAT WILL MY CHILD LEARN — the pathway -->
+  <section class="section journey-section" id="programs" aria-labelledby="journey-title">
     <div class="container">
       <div class="section-head-split" data-reveal>
         <div>
           <div class="eyebrow"><span class="idx">02</span> The Academy</div>
-          <h2 id="pathway-title">One clear journey, by age</h2>
+          <h2 id="journey-title" class="display-title">One clear journey.<br><span class="muted-title">Five stages.</span></h2>
         </div>
         <div>
-          <p>From first build to university-ready portfolio — five stages, each with its own projects and pace.</p>
-          <a href="/programs" class="arrow-link">View all programs &amp; pricing <span class="arrow">→</span></a>
+          <p>Your child enters at their age and moves up through increasingly advanced technology and engineering — from a first screen-free robot to a university-ready portfolio.</p>
+          <a href="/programs" class="arrow-link">Full programs &amp; pricing <span class="arrow">→</span></a>
         </div>
       </div>
 
-      <ol class="pathway-track" data-reveal-group>
-        <li class="stage">
-          <div class="stage-age"><span class="mono">Stage 01</span><strong>4–6<small>yrs</small></strong></div>
-          <span class="stage-node" aria-hidden="true"></span>
-          <h3>Little Explorers</h3>
-          <p>Screen-free coding with command cards. Kids build simple robots and grow logical thinking through play.</p>
-          <div class="stage-levels"><span class="segs" aria-hidden="true"><i class="on"></i><i class="on"></i><i></i><i></i><i></i><i></i></span><span class="mono">2 levels</span></div>
-          <a href="/programs#little-explorers" class="arrow-link stage-link">Details <span class="arrow">→</span><span class="visually-hidden"> about Little Explorers</span></a>
-        </li>
-        <li class="stage">
-          <div class="stage-age"><span class="mono">Stage 02</span><strong>7–10<small>yrs</small></strong></div>
-          <span class="stage-node" aria-hidden="true"></span>
-          <h3>Robot Builders</h3>
-          <p>Block coding, circuits, motors, and sensors across 3 levels — race cars, traffic lights, and line-followers.</p>
-          <div class="stage-levels"><span class="segs" aria-hidden="true"><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i><i></i></span><span class="mono">3 levels</span></div>
-          <a href="/programs#robot-builders" class="arrow-link stage-link">Details <span class="arrow">→</span><span class="visually-hidden"> about Robot Builders</span></a>
-        </li>
-        <li class="stage">
-          <div class="stage-age"><span class="mono">Stage 03</span><strong>11+<small>yrs</small></strong></div>
-          <span class="stage-node" aria-hidden="true"></span>
-          <h3>AI Innovators</h3>
-          <p>From Scratch to Python and C, then real AI: image and voice recognition, across 6 levels.</p>
-          <div class="stage-levels"><span class="segs" aria-hidden="true"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></span><span class="mono">6 levels</span></div>
-          <a href="/programs#ai-innovators" class="arrow-link stage-link">Details <span class="arrow">→</span><span class="visually-hidden"> about AI Innovators</span></a>
-        </li>
-        <li class="stage">
-          <div class="stage-age"><span class="mono">Stage 04</span><strong>12+<small>yrs</small></strong></div>
-          <span class="stage-node" aria-hidden="true"></span>
-          <h3>Future Engineers</h3>
-          <p>PCB circuit design, simulation with Proteus, and 3D modeling &amp; printing across 2 levels.</p>
-          <div class="stage-levels"><span class="segs" aria-hidden="true"><i class="on"></i><i class="on"></i><i></i><i></i><i></i><i></i></span><span class="mono">2 levels</span></div>
-          <a href="/programs#future-engineers" class="arrow-link stage-link">Details <span class="arrow">→</span><span class="visually-hidden"> about Future Engineers</span></a>
-        </li>
-        <li class="stage">
-          <div class="stage-age"><span class="mono">Stage 05</span><strong>15–18<small>yrs</small></strong></div>
-          <span class="stage-node" aria-hidden="true"></span>
-          <h3>Global Pathway</h3>
-          <p>Prepares students for international admissions tests like TMUA, ESAT, and SAT for CS, AI, and engineering.</p>
-          <div class="stage-levels"><span class="segs" aria-hidden="true"><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i><i></i></span><span class="mono">3 levels</span></div>
-          <a href="/programs#global-pathway" class="arrow-link stage-link">Details <span class="arrow">→</span><span class="visually-hidden"> about Global Pathway</span></a>
-        </li>
-      </ol>
+      <div class="journey" data-journey>
+        <div class="journey-rail" role="tablist" aria-label="ERABOTICS pathway stages">
+          <button type="button" role="tab" id="jt-1" aria-controls="jp-1" aria-selected="true"><span class="mono">01</span><strong>Little Explorers</strong><span class="age">Ages 4–6</span></button>
+          <button type="button" role="tab" id="jt-2" aria-controls="jp-2" aria-selected="false" tabindex="-1"><span class="mono">02</span><strong>Robot Builders</strong><span class="age">Ages 7–10</span></button>
+          <button type="button" role="tab" id="jt-3" aria-controls="jp-3" aria-selected="false" tabindex="-1"><span class="mono">03</span><strong>AI Innovators</strong><span class="age">Ages 11+</span></button>
+          <button type="button" role="tab" id="jt-4" aria-controls="jp-4" aria-selected="false" tabindex="-1"><span class="mono">04</span><strong>Future Engineers</strong><span class="age">Ages 12+</span></button>
+          <button type="button" role="tab" id="jt-5" aria-controls="jp-5" aria-selected="false" tabindex="-1"><span class="mono">05</span><strong>Global Pathway</strong><span class="age">Ages 15–18</span></button>
+        </div>
 
-      <div class="pathway-foot" data-reveal>
-        <ul>
-          <li><svg aria-hidden="true"><use href="#icon-clock"></use></svg>8 weeks per stage</li>
-          <li><svg aria-hidden="true"><use href="#icon-school"></use></svg>2 sessions a week</li>
-          <li><svg aria-hidden="true"><use href="#icon-tools"></use></svg>A finished project</li>
-          <li><svg aria-hidden="true"><use href="#icon-mic"></use></svg>Demo Day for parents</li>
-        </ul>
-        <a href="/programs" class="btn btn-outline btn-sm">See full pricing &amp; details <svg aria-hidden="true"><use href="#icon-arrow"></use></svg></a>
+        <div class="journey-panels">
+          <article class="journey-panel" role="tabpanel" id="jp-1" aria-labelledby="jt-1" tabindex="0">
+            <div class="jp-age"><span class="mono">Stage 01 / 05</span><strong>4–6</strong><span class="mono">Years old</span></div>
+            <div class="jp-body">
+              <h3>Little Explorers</h3>
+              <p>Screen-free coding with command cards. Kids build simple robots and grow logical thinking through play.</p>
+              <h4 class="mono">What they learn</h4>
+              <ul class="jp-tags"><li>Screen-free coding</li><li>Command cards</li><li>Simple robots</li><li>Logical thinking</li></ul>
+              <h4 class="mono">They build</h4>
+              <p class="jp-build">Simple LEGO / ZMROBO robots — and the kit is theirs to keep.</p>
+            </div>
+            <div class="jp-meta">
+              <div class="jp-levels"><span class="mono">Levels</span><strong>2</strong><span class="segs" aria-hidden="true"><i class="on"></i><i class="on"></i><i></i><i></i><i></i><i></i></span></div>
+              <div><span class="mono">Format</span><span>8 weeks · 2 sessions a week</span></div>
+              <a href="/programs#little-explorers" class="arrow-link">Stage details <span class="arrow">→</span></a>
+            </div>
+          </article>
+
+          <article class="journey-panel" role="tabpanel" id="jp-2" aria-labelledby="jt-2" tabindex="0">
+            <div class="jp-age"><span class="mono">Stage 02 / 05</span><strong>7–10</strong><span class="mono">Years old</span></div>
+            <div class="jp-body">
+              <h3>Robot Builders</h3>
+              <p>Block coding, circuits, motors, and sensors — the first real electronics, built into working machines.</p>
+              <h4 class="mono">What they learn</h4>
+              <ul class="jp-tags"><li>Block coding</li><li>Circuits</li><li>Motors</li><li>Sensors</li></ul>
+              <h4 class="mono">They build</h4>
+              <p class="jp-build">Race cars, traffic lights, and line-following robots.</p>
+            </div>
+            <div class="jp-meta">
+              <div class="jp-levels"><span class="mono">Levels</span><strong>3</strong><span class="segs" aria-hidden="true"><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i><i></i></span></div>
+              <div><span class="mono">Format</span><span>8 weeks · 2 sessions a week</span></div>
+              <a href="/programs#robot-builders" class="arrow-link">Stage details <span class="arrow">→</span></a>
+            </div>
+          </article>
+
+          <article class="journey-panel" role="tabpanel" id="jp-3" aria-labelledby="jt-3" tabindex="0">
+            <div class="jp-age"><span class="mono">Stage 03 / 05</span><strong>11+</strong><span class="mono">Years old</span></div>
+            <div class="jp-body">
+              <h3>AI Innovators</h3>
+              <p>From Scratch to Python and C, then real AI — teaching machines to recognise images and voices.</p>
+              <h4 class="mono">What they learn</h4>
+              <ul class="jp-tags jp-flow"><li>Scratch</li><li>Python</li><li>C</li><li>AI</li></ul>
+              <h4 class="mono">They build</h4>
+              <p class="jp-build">Image-recognition and voice-recognition projects — like a face-recognition door and a voice-controlled car.</p>
+            </div>
+            <div class="jp-meta">
+              <div class="jp-levels"><span class="mono">Levels</span><strong>6</strong><span class="segs" aria-hidden="true"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></span></div>
+              <div><span class="mono">Format</span><span>8 weeks · 2 sessions a week</span></div>
+              <a href="/programs#ai-innovators" class="arrow-link">Stage details <span class="arrow">→</span></a>
+            </div>
+          </article>
+
+          <article class="journey-panel" role="tabpanel" id="jp-4" aria-labelledby="jt-4" tabindex="0">
+            <div class="jp-age"><span class="mono">Stage 04 / 05</span><strong>12+</strong><span class="mono">Years old</span></div>
+            <div class="jp-body">
+              <h3>Future Engineers</h3>
+              <p>Real engineering workflows: design a circuit board, simulate it, then model and print its enclosure.</p>
+              <h4 class="mono">What they learn</h4>
+              <ul class="jp-tags"><li>PCB design</li><li>Proteus simulation</li><li>3D modeling</li><li>3D printing</li></ul>
+              <h4 class="mono">They build</h4>
+              <p class="jp-build">Their own circuit board, inside their own 3D-printed case.</p>
+            </div>
+            <div class="jp-meta">
+              <div class="jp-levels"><span class="mono">Levels</span><strong>2</strong><span class="segs" aria-hidden="true"><i class="on"></i><i class="on"></i><i></i><i></i><i></i><i></i></span></div>
+              <div><span class="mono">Format</span><span>8 weeks · 2 sessions a week</span></div>
+              <a href="/programs#future-engineers" class="arrow-link">Stage details <span class="arrow">→</span></a>
+            </div>
+          </article>
+
+          <article class="journey-panel" role="tabpanel" id="jp-5" aria-labelledby="jt-5" tabindex="0">
+            <div class="jp-age"><span class="mono">Stage 05 / 05</span><strong>15–18</strong><span class="mono">Years old</span></div>
+            <div class="jp-body">
+              <h3>Global Pathway</h3>
+              <p>Preparation for the international admissions tests used for Computer Science, AI, and Engineering.</p>
+              <h4 class="mono">Admissions tests</h4>
+              <ul class="jp-tags"><li>TMUA</li><li>ESAT</li><li>SAT</li></ul>
+              <h4 class="mono">For</h4>
+              <p class="jp-build">Computer Science, AI, and Engineering at universities in the UK, USA, and Europe.</p>
+            </div>
+            <div class="jp-meta">
+              <div class="jp-levels"><span class="mono">Levels</span><strong>3</strong><span class="segs" aria-hidden="true"><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i><i></i></span></div>
+              <div><span class="mono">Format</span><span>8 weeks · 2 sessions a week</span></div>
+              <a href="/programs#global-pathway" class="arrow-link">Stage details <span class="arrow">→</span></a>
+            </div>
+          </article>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- ADULT COURSES (secondary — an extension of the ecosystem) -->
+  <!-- 4 · HOW IT WORKS -->
+  <section class="section section-alt how" id="how-it-works" aria-labelledby="how-title">
+    <div class="container how-wrap">
+      <div class="how-sticky">
+        <div class="eyebrow"><span class="idx">03</span> How it works</div>
+        <h2 id="how-title" class="display-title">Learning by building,<br><span class="muted-title">not by watching.</span></h2>
+        <div class="how-counter" aria-hidden="true">
+          <span class="how-num" data-how-num>01</span>
+          <span class="how-total mono">/ 04</span>
+        </div>
+        <div class="how-progress" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+      </div>
+      <ol class="how-steps">
+        <li data-how-step="0">
+          <span class="mono">01 — Learn</span>
+          <h3>Two focused, hands-on sessions every week.</h3>
+          <p>Taught at your school by engineers — not lecture-style. Every session moves straight from idea to hands-on work.</p>
+        </li>
+        <li data-how-step="1">
+          <span class="mono">02 — Build</span>
+          <h3>8 weeks. 8 finished projects.</h3>
+          <p>Students apply what they learn to something they build themselves — a finished project every single week.</p>
+        </li>
+        <li data-how-step="2">
+          <span class="mono">03 — Use real tools</span>
+          <h3>Real hardware. A real fabrication lab.</h3>
+          <p>Students work with real components and ERABOTICS' own fabrication lab — not toy substitutes.</p>
+        </li>
+        <li data-how-step="3">
+          <span class="mono">04 — Show &amp; celebrate</span>
+          <h3>Every 8 weeks ends with Demo Day.</h3>
+          <p>Students present their own invention to their parents — explaining how it works and why it matters.</p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- 5 · WHAT WILL MY CHILD BUILD -->
+  <section class="section showcase" aria-labelledby="showcase-title">
+    <div class="container">
+      <div class="showcase-head" data-reveal>
+        <div>
+          <div class="eyebrow"><span class="idx">04</span> Student projects</div>
+          <h2 id="showcase-title" class="display-title">They don't just learn.<br><span class="grad-text">They build.</span></h2>
+        </div>
+        <div class="showcase-controls">
+          <p class="mono showcase-note">Example builds from the ERABOTICS curriculum</p>
+          <div class="gallery-nav">
+            <button type="button" class="gallery-btn" data-gallery-prev aria-label="Previous project"><svg aria-hidden="true"><use href="#icon-arrow"></use></svg></button>
+            <span class="mono" data-gallery-count>01 / 03</span>
+            <button type="button" class="gallery-btn" data-gallery-next aria-label="Next project"><svg aria-hidden="true"><use href="#icon-arrow"></use></svg></button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="gallery" data-gallery tabindex="0" aria-label="Student project examples">
+      <article class="project">
+        <div class="project-visual" aria-hidden="true">
+          <span class="project-no mono">Project 001</span>
+          <svg viewBox="0 0 480 320" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path class="dim" d="M20 270c90-6 110-90 220-90s140 76 220 70" stroke-width="16" opacity=".22"/>
+            <path class="dim" d="M20 270c90-6 110-90 220-90s140 76 220 70" stroke-dasharray="4 8"/>
+            <rect x="170" y="70" width="140" height="110" rx="14"/>
+            <rect x="140" y="86" width="26" height="50" rx="5"/><rect x="314" y="86" width="26" height="50" rx="5"/>
+            <circle cx="214" cy="190" r="7"/><circle cx="266" cy="190" r="7"/>
+            <path d="M196 104h88M196 124h56M196 144h72"/>
+            <path class="dim" d="M214 197v24M266 197v24" stroke-dasharray="3 5"/>
+            <path class="dim" d="M150 50h180M150 44v12M330 44v12"/>
+            <text x="216" y="40" class="svg-label">140 mm</text>
+            <path class="dim" d="M360 200l40 30"/><text x="404" y="242" class="svg-label">IR × 2</text>
+            <path class="dim" d="M120 110l-40-20"/><text x="24" y="86" class="svg-label">MOTOR.L</text>
+          </svg>
+        </div>
+        <div class="project-spec">
+          <h3>Line-Follower Robot</h3>
+          <p>A small autonomous robot that reads the floor with infrared sensors and steers itself along a line.</p>
+          <dl>
+            <div><dt class="mono">Stage</dt><dd>Robot Builders · Ages 7–10</dd></div>
+            <div><dt class="mono">Stack</dt><dd>Sensors + motors + block coding</dd></div>
+            <div><dt class="mono">Skills</dt><dd>Feedback control, wiring, debugging</dd></div>
+          </dl>
+        </div>
+      </article>
+
+      <article class="project">
+        <div class="project-visual" aria-hidden="true">
+          <span class="project-no mono">Project 002</span>
+          <svg viewBox="0 0 480 320" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="60" y="40" width="120" height="250" rx="6"/>
+            <circle cx="160" cy="170" r="6"/>
+            <path class="dim" d="M60 290h120" stroke-width="6" opacity=".3"/>
+            <circle cx="300" cy="66" r="14"/><path d="M300 80v18"/>
+            <path d="M246 120v-18h18M354 102h18v18M372 230v18h-18M264 248h-18v-18"/>
+            <circle cx="309" cy="160" r="30"/><path d="M270 236c6-22 22-34 39-34s33 12 39 34"/>
+            <path class="dim" d="M288 154h8M322 154h8M300 174c6 4 12 4 18 0" stroke-width="1.5"/>
+            <path class="dim" d="M190 170h40" stroke-dasharray="4 6"/>
+            <text x="388" y="110" class="svg-label">MATCH 0.97</text>
+            <text x="388" y="132" class="svg-label">DOOR → OPEN</text>
+            <path class="dim" d="M386 116h-14"/>
+          </svg>
+        </div>
+        <div class="project-spec">
+          <h3>Face-Recognition Door</h3>
+          <p>A door lock that uses a camera and a trained model to recognise approved faces before it opens.</p>
+          <dl>
+            <div><dt class="mono">Stage</dt><dd>AI Innovators · Ages 11+</dd></div>
+            <div><dt class="mono">Stack</dt><dd>Python + camera + computer vision</dd></div>
+            <div><dt class="mono">Skills</dt><dd>Image recognition, programming, hardware control</dd></div>
+          </dl>
+        </div>
+      </article>
+
+      <article class="project">
+        <div class="project-visual" aria-hidden="true">
+          <span class="project-no mono">Project 003</span>
+          <svg viewBox="0 0 480 320" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path class="dim" d="M90 100l50-40h250l-50 40"/>
+            <rect x="90" y="100" width="250" height="160" rx="8"/>
+            <path class="dim" d="M340 100l50-40v160l-50 40"/>
+            <rect x="180" y="146" width="70" height="70" rx="4"/>
+            <path d="M192 146v-12M210 146v-12M228 146v-12M192 228v-12M210 228v-12M228 228v-12"/>
+            <path d="M120 130h40v50h20M250 180h40v54M120 236h60"/>
+            <circle cx="120" cy="130" r="5"/><circle cx="290" cy="234" r="5"/><circle cx="120" cy="236" r="5"/>
+            <path class="dim" d="M90 286h250M90 280v12M340 280v12"/><text x="190" y="306" class="svg-label">PCB · 2-LAYER</text>
+            <text x="350" y="42" class="svg-label">CASE · PLA</text>
+          </svg>
+        </div>
+        <div class="project-spec">
+          <h3>PCB + 3D-Printed Case</h3>
+          <p>A circuit board the student designs and simulates, housed in an enclosure they model and 3D print.</p>
+          <dl>
+            <div><dt class="mono">Stage</dt><dd>Future Engineers · Ages 12+</dd></div>
+            <div><dt class="mono">Stack</dt><dd>PCB design + engineering + manufacturing</dd></div>
+            <div><dt class="mono">Skills</dt><dd>Proteus simulation, 3D modeling, 3D printing</dd></div>
+          </dl>
+        </div>
+      </article>
+    </div>
+
+    <div class="container showcase-foot">
+      <a href="/projects" class="btn btn-outline">Explore Student Projects <svg aria-hidden="true"><use href="#icon-arrow"></use></svg></a>
+    </div>
+  </section>
+
+  <!-- 6 · DEMO DAY -->
+  <section class="demo-split" aria-labelledby="demo-title">
+    <div class="demo-block">
+      <div class="demo-block-inner" data-reveal>
+        <span class="mono">05 — Demo Day</span>
+        <h2 id="demo-title" class="display-title">Build it.<br>Then show it.</h2>
+        <p>Every 8 weeks, students present their own invention to their parents — the way an engineer pitches a product.</p>
+      </div>
+    </div>
+    <div class="demo-list">
+      <ol data-reveal-group>
+        <li><span class="mono">Every week</span><strong>A finished project</strong></li>
+        <li><span class="mono">Every 8 weeks</span><strong>Demo Day</strong></li>
+        <li><span class="mono">Top students</span><strong>Competition pathway</strong></li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- 7 · CAN STUDENTS COMPETE -->
+  <section class="section compete is-ink tech-grid" aria-labelledby="compete-title">
+    <div class="container">
+      <div class="section-head-split" data-reveal>
+        <div>
+          <div class="eyebrow"><span class="idx">06</span> Competitions</div>
+          <h2 id="compete-title" class="display-title">From classroom<br>to competition.</h2>
+        </div>
+        <div>
+          <p>Every course ends with Demo Day. Students who stand out get support to take their project further — into robotics and innovation competitions.</p>
+          <a href="/competitions" class="btn btn-primary">Explore Competitions <svg aria-hidden="true"><use href="#icon-arrow"></use></svg></a>
+        </div>
+      </div>
+      <ol class="compete-flow" data-reveal-group>
+        <li><span class="mono">01</span><strong>Learn</strong></li>
+        <li><span class="mono">02</span><strong>Build</strong></li>
+        <li><span class="mono">03</span><strong>Master</strong></li>
+        <li><span class="mono">04</span><strong>Compete</strong></li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- 8 · SCHOOLS & PARTNERS -->
+  <section class="section section-alt" aria-labelledby="partners-title">
+    <div class="container partner-grid">
+      <div class="partner-copy" data-reveal>
+        <div class="eyebrow"><span class="idx">07</span> For schools &amp; organizations</div>
+        <h2 id="partners-title" class="display-title">Bring ERABOTICS<br>to your school.</h2>
+        <p>Our courses run on-site, at your school. We work with schools, universities, and organizations to bring hands-on robotics, coding, and AI education to their students.</p>
+        <ul class="partner-who" aria-label="Who we work with">
+          <li><svg aria-hidden="true"><use href="#icon-school"></use></svg>Schools</li>
+          <li><svg aria-hidden="true"><use href="#icon-graduation"></use></svg>Universities</li>
+          <li><svg aria-hidden="true"><use href="#icon-building"></use></svg>Companies &amp; organizations</li>
+        </ul>
+        <div class="hero-actions">
+          <a href="/partners" class="btn btn-primary">Partner With Us <svg aria-hidden="true"><use href="#icon-arrow"></use></svg></a>
+          <a href="/contact" class="btn btn-outline">Talk to our team</a>
+        </div>
+      </div>
+      <div class="spec-panel" data-reveal>
+        <div class="spec-panel-head"><span class="mono">What a partnership can include</span><span class="mono">05 items</span></div>
+        <ol class="spec-rows">
+          <li><span class="mono">01</span><div><strong>On-site workshops</strong><span>ERABOTICS instructors deliver sessions at your location, using our own equipment and kits.</span></div></li>
+          <li><span class="mono">02</span><div><strong>Custom curriculum</strong><span>Adapted to your students' age group, schedule, and existing curriculum.</span></div></li>
+          <li><span class="mono">03</span><div><strong>Teacher training</strong><span>Helping your own staff run robotics or AI activities between our visits.</span></div></li>
+          <li><span class="mono">04</span><div><strong>Equipment &amp; kits</strong><span>Components and kits from the ERABOTICS Store, sized to your program.</span></div></li>
+          <li><span class="mono">05</span><div><strong>Ongoing support</strong><span>A single point of contact for scheduling, materials, and questions.</span></div></li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9 · BEYOND THE ACADEMY -->
   <section class="section-tight" aria-labelledby="adults-title">
     <div class="container">
       <div class="adult-banner" data-reveal>
         <div>
-          <div class="eyebrow">Beyond the Academy</div>
-          <h2 id="adults-title">Also teaching Adult Courses</h2>
-          <p>Programming, Data &amp; AI for university students, graduates and professionals — plus Voice Over.</p>
-          <a href="/adults" class="btn btn-primary">See Adult Courses <svg aria-hidden="true"><use href="#icon-arrow"></use></svg></a>
+          <div class="eyebrow"><span class="idx">08</span> Adult courses</div>
+          <h2 id="adults-title">Beyond the Academy.</h2>
+          <p>Programming, Data &amp; AI for university students, graduates and professionals.</p>
+          <a href="/adults" class="btn btn-primary">Explore Adult Courses <svg aria-hidden="true"><use href="#icon-arrow"></use></svg></a>
         </div>
         <ul class="course-tags" aria-label="Adult courses">
           <li>Programming Fundamentals</li>
@@ -346,173 +617,30 @@
     </div>
   </section>
 
-  <!-- HOW LEARNING WORKS -->
-  <section class="section section-alt" aria-labelledby="process-title">
-    <div class="container process-wrap">
-      <div class="process-intro" data-reveal>
-        <div class="eyebrow"><span class="idx">03</span> How it works</div>
-        <h2 id="process-title">Learning by building, not by watching</h2>
-        <p>Every program is project-based. Students build something real, not just complete exercises.</p>
-        <a href="/academy" class="btn btn-outline">Explore the Academy <svg aria-hidden="true"><use href="#icon-arrow"></use></svg></a>
-      </div>
-      <ol class="process" data-reveal-group>
-        <li>
-          <span class="process-num">01</span>
-          <div>
-            <h3>Learn</h3>
-            <p>Two focused sessions a week, taught hands-on at your school — not lecture-style.</p>
-          </div>
-        </li>
-        <li>
-          <span class="process-num">02</span>
-          <div>
-            <h3>Build</h3>
-            <p>8 weeks, 8 finished projects. Students apply what they learn to something they build themselves.</p>
-          </div>
-        </li>
-        <li>
-          <span class="process-num">03</span>
-          <div>
-            <h3>Use real tools</h3>
-            <p>Students work with ERABOTICS' own fabrication lab and real hardware, not toy substitutes.</p>
-          </div>
-        </li>
-        <li>
-          <span class="process-num">04</span>
-          <div>
-            <h3>Show &amp; celebrate</h3>
-            <p>Demo Day: kids present their own invention to parents at the end of every 8-week course.</p>
-          </div>
-        </li>
-      </ol>
-    </div>
-  </section>
-
-  <!-- DEMO DAY / PROJECTS -->
-  <section class="section" aria-labelledby="demo-title">
-    <div class="container demo-grid">
-      <div class="demo-visual" data-reveal>
-        <span class="demo-status mono">Example builds from the curriculum</span>
-
-        <article class="spec-sheet s-1">
-          <div class="spec-head mono"><span>Robot Builders</span><span>Ages 7–10</span></div>
-          <div class="spec-art" aria-hidden="true">
-            <svg viewBox="0 0 160 100" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-              <path class="dim" d="M8 84c30-4 40-30 72-30s44 24 72 22" stroke-width="5" opacity="0.35"/>
-              <rect x="56" y="22" width="48" height="40" rx="6"/>
-              <rect x="46" y="28" width="8" height="16" rx="2"/><rect x="106" y="28" width="8" height="16" rx="2"/>
-              <circle cx="72" cy="66" r="3"/><circle cx="88" cy="66" r="3"/>
-              <path d="M66 34h28M66 42h18"/>
-              <path class="dim" d="M72 69v8M88 69v8" stroke-dasharray="2 3"/>
-            </svg>
-          </div>
-          <div class="spec-body"><strong>Line-follower robot</strong><span>Sensors, motors and block coding</span></div>
-        </article>
-
-        <article class="spec-sheet s-2">
-          <div class="spec-head mono"><span>AI Innovators</span><span>Ages 11+</span></div>
-          <div class="spec-art" aria-hidden="true">
-            <svg viewBox="0 0 160 100" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="20" y="12" width="44" height="80" rx="3"/>
-              <circle cx="56" cy="54" r="2.5"/>
-              <circle cx="104" cy="20" r="5"/><path d="M104 25v6"/>
-              <path d="M88 40v-6h6M120 34h6v6M126 74v6h-6M94 80h-6v-6"/>
-              <circle cx="107" cy="52" r="10"/><path d="M95 74c2-7 7-10 12-10s10 3 12 10"/>
-              <path class="dim" d="M70 52h12" stroke-dasharray="2 3"/>
-            </svg>
-          </div>
-          <div class="spec-body"><strong>Face-recognition door</strong><span>Python, a camera and image recognition</span></div>
-        </article>
-
-        <article class="spec-sheet s-3">
-          <div class="spec-head mono"><span>Future Engineers</span><span>Ages 12+</span></div>
-          <div class="spec-art" aria-hidden="true">
-            <svg viewBox="0 0 160 100" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-              <path class="dim" d="M24 26 40 14h96l-16 12" opacity="0.7"/>
-              <rect x="24" y="26" width="96" height="60" rx="4"/>
-              <path class="dim" d="M120 26l16-12v60l-16 12"/>
-              <rect x="58" y="42" width="26" height="26" rx="2"/>
-              <path d="M62 42v-5M70 42v-5M78 42v-5M62 73v-5M70 73v-5M78 73v-5"/>
-              <path d="M36 38h14v18h8M84 52h14v20M36 72h22"/>
-              <circle cx="36" cy="38" r="2"/><circle cx="98" cy="72" r="2"/><circle cx="36" cy="72" r="2"/>
-            </svg>
-          </div>
-          <div class="spec-body"><strong>PCB in a 3D-printed case</strong><span>Their own board, their own enclosure</span></div>
-        </article>
-      </div>
-
-      <div class="demo-copy" data-reveal>
-        <div class="eyebrow"><span class="idx">04</span> Demo Day</div>
-        <h2 id="demo-title">Students don't just learn. <span>They build it — then they present it.</span></h2>
-        <p>Every 8 weeks ends with Demo Day. Students present their own invention to parents at the end of every course, and top students get a path into competitions.</p>
-        <ol class="demo-flow">
-          <li><span class="mono">Every week</span><span>A finished project, built by the student</span></li>
-          <li><span class="mono">Every 8 weeks</span><span>Demo Day — presenting to parents</span></li>
-          <li><span class="mono">Top students</span><span>A path into robotics competitions</span></li>
-        </ol>
-        <p class="demo-note"><svg aria-hidden="true"><use href="#icon-info"></use></svg><span>A gallery of specific student projects and results is coming to this site soon.</span></p>
-        <div class="hero-actions">
-          <a href="/projects" class="btn btn-primary">See student projects <svg aria-hidden="true"><use href="#icon-arrow"></use></svg></a>
-          <a href="/competitions" class="btn btn-outline">See competitions</a>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- STORE (secondary, compact) -->
-  <section class="section-tight" aria-labelledby="store-title">
+  <!-- STORE (compact) -->
+  <section class="section-tight store-section" aria-labelledby="store-title">
     <div class="container">
       <div class="store-strip" data-reveal>
         <div class="feature-icon"><svg class="icon" aria-hidden="true"><use href="#icon-plug"></use></svg></div>
         <div>
-          <h3 id="store-title">Also from ERABOTICS — the Store</h3>
-          <p>Components and kits for students and makers, run by the same team behind the Academy's lab.</p>
-          <div class="cats mono" aria-hidden="true"><span>Dev boards</span><span>Sensors</span><span>Motors</span><span>Kits</span><span>Power</span></div>
+          <h3 id="store-title">ERABOTICS Store</h3>
+          <p>Components and kits for students and makers.</p>
+          <div class="cats mono" aria-hidden="true"><span>Dev Boards</span><span>Sensors</span><span>Motors</span><span>Kits</span><span>Power</span></div>
         </div>
         <a href="/store" class="btn btn-outline">Visit the Store <svg aria-hidden="true"><use href="#icon-arrow"></use></svg></a>
       </div>
     </div>
   </section>
 
-  <!-- SCHOOLS & PARTNERS -->
-  <section class="section section-alt" aria-labelledby="partners-title">
-    <div class="container partner-grid">
-      <div class="partner-copy" data-reveal>
-        <div class="eyebrow"><span class="idx">05</span> For schools &amp; organizations</div>
-        <h2 id="partners-title">Bring ERABOTICS to your school</h2>
-        <p>Our courses run on-site, at your school. If ERABOTICS isn't there yet, we work with schools and organizations to bring hands-on robotics, coding, and AI education to their students.</p>
-        <ul class="partner-who" aria-label="Who we work with">
-          <li><svg aria-hidden="true"><use href="#icon-school"></use></svg>Schools</li>
-          <li><svg aria-hidden="true"><use href="#icon-graduation"></use></svg>Universities</li>
-          <li><svg aria-hidden="true"><use href="#icon-building"></use></svg>Companies &amp; organizations</li>
-        </ul>
-        <div class="hero-actions">
-          <a href="/partners" class="btn btn-primary">Partner with us <svg aria-hidden="true"><use href="#icon-arrow"></use></svg></a>
-          <a href="/contact" class="btn btn-outline">Talk to our team</a>
-        </div>
-      </div>
-      <div class="spec-panel" data-reveal>
-        <div class="spec-panel-head"><span class="mono">What a partnership can include</span><span class="mono">05 items</span></div>
-        <ol class="spec-rows">
-          <li><span class="mono">01</span><div><strong>On-site workshops</strong><span>ERABOTICS instructors deliver sessions at your location, using our own equipment and kits.</span></div></li>
-          <li><span class="mono">02</span><div><strong>Custom curriculum</strong><span>Adapted to your students' age group, schedule, and existing curriculum.</span></div></li>
-          <li><span class="mono">03</span><div><strong>Teacher training</strong><span>Helping your own staff run robotics or AI activities between our visits.</span></div></li>
-          <li><span class="mono">04</span><div><strong>Equipment &amp; kits</strong><span>Store components and kits, sized to your program.</span></div></li>
-          <li><span class="mono">05</span><div><strong>Ongoing support</strong><span>A single point of contact for scheduling, materials, and questions.</span></div></li>
-        </ol>
-      </div>
-    </div>
-  </section>
-
-  <!-- FINAL CTA -->
+  <!-- HOW DO I ENROLL -->
   <section class="final-cta is-ink" aria-labelledby="cta-title">
     <div class="container" data-reveal>
       <img src="assets/img/erabotics-mark.png" alt="" class="mark" width="64" height="64">
-      <h2 id="cta-title">Ready to start <span class="grad-text">building?</span></h2>
-      <p>Tell us your child's age and their school — we'll help you get them enrolled.</p>
+      <h2 id="cta-title" class="display-title">Ready to start<br><span class="grad-text">building?</span></h2>
+      <p>Tell us your child's age and school — we'll help you find the right stage.</p>
       <div class="cta-actions">
-        <a href="/contact" class="btn btn-primary">Get in touch <svg aria-hidden="true"><use href="#icon-arrow"></use></svg></a>
-        <a href="/programs" class="btn btn-outline">See pricing &amp; ages</a>
+        <a href="/contact" class="btn btn-primary btn-lg">Get in Touch <svg aria-hidden="true"><use href="#icon-arrow"></use></svg></a>
+        <a href="/programs" class="btn btn-outline btn-lg">See Programs &amp; Ages</a>
       </div>
       <div class="contact-line mono">
         <a href="mailto:academy@eraboticseg.com">academy@eraboticseg.com</a>
@@ -526,24 +654,19 @@
 
 <footer class="site-footer">
   <div class="container">
+    <div class="footer-top">
+      <a href="/" class="footer-word" aria-label="ERABOTICS Academy — home">
+        <img src="assets/img/erabotics-mark.png" alt="" width="56" height="56">
+        <span><b>ERA</b>BOTICS</span>
+        <span class="mono">Academy</span>
+      </a>
+      <p>An education-and-technology ecosystem teaching the next generation to build, create, and innovate through Robotics and AI — with entrepreneurial thinking built into every project.</p>
+    </div>
     <div class="footer-grid">
-      <div class="footer-brand">
-        <a href="/" class="brand" aria-label="ERABOTICS Academy — home">
-          <img src="assets/img/erabotics-mark.png" alt="" class="brand-mark" width="34" height="34">
-          <span class="brand-name"><b>ERA</b>botics</span>
-          <span class="brand-tag">Academy</span>
-        </a>
-        <p>An education-and-technology ecosystem teaching the next generation to build, create, and innovate through Robotics and AI — with entrepreneurial thinking built into every project.</p>
-        <div class="social-row">
-          <a href="https://www.facebook.com/profile.php?id=61594808093657" aria-label="ERABOTICS on Facebook" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#icon-facebook"></use></svg></a>
-          <a href="https://instagram.com/erabotics" aria-label="ERABOTICS on Instagram" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#icon-instagram"></use></svg></a>
-          <a href="https://wa.me/201015397943" aria-label="Message ERABOTICS on WhatsApp" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#icon-whatsapp"></use></svg></a>
-        </div>
-      </div>
       <div class="footer-col">
         <h4>Academy</h4>
         <ul>
-          <li><a href="/programs">Programs &amp; Courses</a></li>
+          <li><a href="/programs">Programs</a></li>
           <li><a href="/robotics">Robotics</a></li>
           <li><a href="/ai">Artificial Intelligence</a></li>
           <li><a href="/entrepreneurship">Entrepreneurship</a></li>
@@ -551,14 +674,25 @@
         </ul>
       </div>
       <div class="footer-col">
-        <h4>Company</h4>
+        <h4>Explore</h4>
         <ul>
-          <li><a href="/about">About Us</a></li>
           <li><a href="/projects">Student Projects</a></li>
           <li><a href="/competitions">Competitions</a></li>
           <li><a href="/partners">Schools &amp; Partners</a></li>
           <li><a href="/store">Store</a></li>
         </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <ul>
+          <li><a href="/about">About Us</a></li>
+          <li><a href="/contact">Contact</a></li>
+        </ul>
+        <div class="social-row">
+          <a href="https://www.facebook.com/profile.php?id=61594808093657" aria-label="ERABOTICS on Facebook" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#icon-facebook"></use></svg></a>
+          <a href="https://instagram.com/erabotics" aria-label="ERABOTICS on Instagram" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#icon-instagram"></use></svg></a>
+          <a href="https://wa.me/201015397943" aria-label="Message ERABOTICS on WhatsApp" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#icon-whatsapp"></use></svg></a>
+        </div>
       </div>
       <div class="footer-col">
         <h4>Contact</h4>

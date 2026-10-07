@@ -146,7 +146,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const current = normalize(window.location.pathname);
   document.querySelectorAll('.nav-links a, .dropdown a').forEach((a) => {
     const href = a.getAttribute('href');
-    if (!href || href.startsWith('http') || href.startsWith('#')) return;
+    // Section links (/#how-it-works) are highlighted by the scroll-spy below instead
+    if (!href || href.startsWith('http') || href.includes('#')) return;
     if (normalize(href.split('#')[0]) === current) {
       a.classList.add('active');
       a.setAttribute('aria-current', 'page');
@@ -192,6 +193,115 @@ document.addEventListener('DOMContentLoaded', () => {
         frame = null;
       });
     });
+  }
+
+  // Hero: live-looking telemetry (decorative)
+  const coords = document.querySelector('[data-coords]');
+  const dist = document.querySelector('[data-tele="dist"]');
+  const motor = document.querySelector('[data-tele="motor"]');
+  if (dist && !reduceMotion) {
+    let t = 0;
+    setInterval(() => {
+      if (document.hidden) return;
+      t += 1;
+      dist.textContent = `${(24 + Math.sin(t / 3) * 6 + Math.random()).toFixed(1)} cm`;
+      const l = Math.round(60 + Math.sin(t / 4) * 8);
+      motor.textContent = `${l}% / ${l - 4 + Math.round(Math.random() * 3)}%`;
+      if (coords) coords.textContent = `X ${(120 + Math.cos(t / 5) * 40).toFixed(1).padStart(5, '0')} · Y ${(80 + Math.sin(t / 5) * 30).toFixed(1).padStart(5, '0')}`;
+    }, 900);
+  }
+
+  // Pathway: five-stage journey (accessible tabs)
+  const journey = document.querySelector('[data-journey]');
+  if (journey) {
+    const tabs = [...journey.querySelectorAll('[role="tab"]')];
+    const panels = tabs.map((t) => document.getElementById(t.getAttribute('aria-controls')));
+    const select = (i, focus) => {
+      tabs.forEach((t, j) => {
+        const on = j === i;
+        t.setAttribute('aria-selected', String(on));
+        t.tabIndex = on ? 0 : -1;
+        t.classList.toggle('is-past', j < i);
+        panels[j].hidden = !on;
+        if (on && !reduceMotion) {
+          panels[j].classList.remove('is-entering');
+          void panels[j].offsetWidth;
+          panels[j].classList.add('is-entering');
+        }
+      });
+      journey.style.setProperty('--step', i);
+      if (focus) tabs[i].focus();
+      const rail = tabs[i].parentElement;
+      if (rail.scrollWidth > rail.clientWidth) rail.scrollTo({ left: tabs[i].offsetLeft - 8, behavior: reduceMotion ? 'auto' : 'smooth' });
+    };
+    tabs.forEach((t, i) => {
+      t.addEventListener('click', () => select(i));
+      t.addEventListener('keydown', (e) => {
+        const k = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 }[e.key];
+        if (k) { e.preventDefault(); select((i + k + tabs.length) % tabs.length, true); }
+        if (e.key === 'Home') { e.preventDefault(); select(0, true); }
+        if (e.key === 'End') { e.preventDefault(); select(tabs.length - 1, true); }
+      });
+    });
+    select(0);
+  }
+
+  // How it works: step counter follows the scroll
+  const howSteps = [...document.querySelectorAll('[data-how-step]')];
+  const howNum = document.querySelector('[data-how-num]');
+  const howBars = [...document.querySelectorAll('.how-progress i')];
+  if (howSteps.length && 'IntersectionObserver' in window) {
+    const setStep = (i) => {
+      howSteps.forEach((s, j) => s.classList.toggle('is-active', j === i));
+      howBars.forEach((b, j) => b.classList.toggle('on', j <= i));
+      if (howNum) howNum.textContent = String(i + 1).padStart(2, '0');
+    };
+    const sio = new IntersectionObserver((entries) => {
+      entries.forEach((en) => { if (en.isIntersecting) setStep(Number(en.target.dataset.howStep)); });
+    }, { rootMargin: '-45% 0px -45% 0px' });
+    howSteps.forEach((s) => sio.observe(s));
+    setStep(0);
+  }
+
+  // Project gallery: prev/next + counter
+  const gallery = document.querySelector('[data-gallery]');
+  if (gallery) {
+    const items = [...gallery.children];
+    const prev = document.querySelector('[data-gallery-prev]');
+    const next = document.querySelector('[data-gallery-next]');
+    const count = document.querySelector('[data-gallery-count]');
+    const step = () => items[1] ? items[1].offsetLeft - items[0].offsetLeft : gallery.clientWidth;
+    const index = () => Math.round(gallery.scrollLeft / step());
+    const update = () => {
+      const i = Math.min(items.length - 1, index());
+      const atEnd = gallery.scrollLeft + gallery.clientWidth >= gallery.scrollWidth - 4;
+      if (count) count.textContent = `${String(atEnd ? items.length : i + 1).padStart(2, '0')} / ${String(items.length).padStart(2, '0')}`;
+      if (prev) prev.disabled = gallery.scrollLeft <= 4;
+      if (next) next.disabled = atEnd;
+    };
+    const go = (d) => gallery.scrollBy({ left: d * step(), behavior: reduceMotion ? 'auto' : 'smooth' });
+    prev?.addEventListener('click', () => go(-1));
+    next?.addEventListener('click', () => go(1));
+    gallery.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight') { e.preventDefault(); go(1); }
+      if (e.key === 'ArrowLeft') { e.preventDefault(); go(-1); }
+    });
+    gallery.addEventListener('scroll', () => requestAnimationFrame(update), { passive: true });
+    window.addEventListener('resize', update);
+    update();
+    if ('IntersectionObserver' in window && !reduceMotion) {
+      const gio = new IntersectionObserver(([en]) => { if (en.isIntersecting) { gallery.classList.add('is-visible'); gio.disconnect(); } }, { threshold: 0.2 });
+      gio.observe(gallery);
+    } else {
+      gallery.classList.add('is-visible');
+    }
+  }
+
+  // Scroll-spy: highlight "How It Works" while that section is on screen
+  const spyLink = document.querySelector('.nav-links a[data-section]');
+  const spyTarget = spyLink && document.getElementById(spyLink.dataset.section);
+  if (spyTarget && 'IntersectionObserver' in window) {
+    new IntersectionObserver(([en]) => spyLink.classList.toggle('active', en.isIntersecting), { rootMargin: '-40% 0px -55% 0px' }).observe(spyTarget);
   }
 });
 
