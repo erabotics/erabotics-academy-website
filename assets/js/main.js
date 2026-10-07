@@ -297,6 +297,23 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  // Arriving from another page via /#section: the browser's own jump can be
+  // lost while fonts and the catalog settle, so re-apply it once loaded
+  if (location.hash.length > 1) {
+    const target = document.getElementById(decodeURIComponent(location.hash.slice(1)));
+    if (target) {
+      // setTimeout (not requestAnimationFrame): frames are paused in background tabs
+      window.addEventListener('load', () => {
+        setTimeout(() => {
+          // Only correct a lost jump; never move someone who has already scrolled
+          if (Math.abs(target.getBoundingClientRect().top) > 120 && window.scrollY < 50) {
+            target.scrollIntoView({ behavior: 'auto', block: 'start' });
+          }
+        }, 0);
+      }, { once: true });
+    }
+  }
+
   // Scroll-spy: highlight "How It Works" while that section is on screen
   const spyLink = document.querySelector('.nav-links a[data-section]');
   const spyTarget = spyLink && document.getElementById(spyLink.dataset.section);
