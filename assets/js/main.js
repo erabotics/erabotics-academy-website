@@ -25,11 +25,23 @@ document.addEventListener('DOMContentLoaded', () => {
   const toggle = document.querySelector('.nav-toggle');
   const nav = document.querySelector('.nav');
   if (toggle && nav) {
-    toggle.addEventListener('click', () => {
-      nav.classList.toggle('open');
-    });
+    const setMenu = (open) => {
+      nav.classList.toggle('open', open);
+      document.body.classList.toggle('menu-open', open);
+      toggle.setAttribute('aria-expanded', String(open));
+    };
+    toggle.addEventListener('click', () => setMenu(!nav.classList.contains('open')));
     nav.querySelectorAll('.nav-links a').forEach((link) => {
-      link.addEventListener('click', () => nav.classList.remove('open'));
+      link.addEventListener('click', () => setMenu(false));
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && nav.classList.contains('open')) {
+        setMenu(false);
+        toggle.focus();
+      }
+    });
+    window.matchMedia('(min-width: 961px)').addEventListener('change', (e) => {
+      if (e.matches) setMenu(false);
     });
   }
 
@@ -60,12 +72,33 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Header shadow on scroll
+  // Header turns solid (blur + border) once the page is scrolled
   const header = document.querySelector('.site-header');
   if (header) {
-    window.addEventListener('scroll', () => {
-      header.style.boxShadow = window.scrollY > 10 ? '0 8px 24px -12px rgba(0,0,0,0.5)' : 'none';
-    });
+    const onScroll = () => header.classList.toggle('scrolled', window.scrollY > 8);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+  }
+
+  // Scroll reveal for [data-reveal] blocks
+  const revealEls = document.querySelectorAll('[data-reveal]');
+  if (revealEls.length) {
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+            io.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.12, rootMargin: '0px 0px -6% 0px' });
+      revealEls.forEach((el, i) => {
+        el.style.setProperty('--reveal-delay', `${(i % 4) * 70}ms`);
+        io.observe(el);
+      });
+    } else {
+      revealEls.forEach((el) => el.classList.add('is-visible'));
+    }
   }
 
   // Contact / lead forms: submit to Formspree (email) and, if the form has
@@ -121,10 +154,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Set active nav link based on current page (also lights up the
   // Academy parent when the current page is one of its dropdown tracks)
-  const path = window.location.pathname.split('/').pop() || 'index.html';
-  document.querySelectorAll('.nav-links a, .dropdown a').forEach((a) => {
-    const href = a.getAttribute('href');
-    if (href === path) {
+  // (works for both /about and about.html, and for the home page)
+  const normalize = (p) => (p.split('/').pop() || '').replace(/\.html$/, '').replace(/^index$/, '');
+  const currentPage = normalize(window.location.pathname);
+  document.querySelectorAll('.nav-links > li > a, .dropdown a').forEach((a) => {
+    if (a.classList.contains('btn')) return;
+    const href = a.getAttribute('href') || '';
+    if (/^https?:/.test(href)) return;
+    if (normalize(href) === currentPage) {
       a.classList.add('active');
       const parentItem = a.closest('.has-dropdown');
       if (parentItem) {
