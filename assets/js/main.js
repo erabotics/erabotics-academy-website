@@ -323,80 +323,117 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // ---------- FAQ chat widget (pre-written Q&A, no external AI) ----------
+// Answers are structured data rendered with safe DOM APIs (no innerHTML):
+// a plain string is text, { b } is bold text, { a, href } is a link.
 (function () {
   const FAQS = [
     {
       q: 'How much do the courses cost?',
-      a: "Most stages are <strong>3,500 EGP</strong> per 8-week course (Robot Builders, AI Innovators, Future Engineers, or Global Pathway). <strong>Little Explorers</strong> (ages 4–6) is 4,500 EGP and includes a LEGO / ZMROBO kit your child keeps. Full-track bundles and discounts are available too — see <a href=\"programs.html\">Programs &amp; Pricing</a>."
+      a: ['Most stages are ', { b: '3,500 EGP' }, ' per 8-week course (Robot Builders, AI Innovators, Future Engineers, or Global Pathway). ', { b: 'Little Explorers' }, ' (ages 4–6) is 4,500 EGP and includes a LEGO / ZMROBO kit your child keeps. Full-track bundles and discounts are available too — see ', { a: 'Programs & Pricing', href: '/programs' }, '.']
     },
     {
       q: 'What is ERABOTICS?',
-      a: 'ERABOTICS Academy is a robotics and STEM education center founded by engineers. We teach robotics, coding, and AI through hands-on, project-based learning — delivered on-site at partner schools.'
+      a: ['ERABOTICS Academy is a robotics and STEM education center founded by engineers. We teach robotics, coding, and AI through hands-on, project-based learning — delivered on-site at partner schools.']
     },
     {
       q: 'What courses do you offer?',
-      a: 'One clear pathway across five age stages: <strong>Little Explorers</strong> (4–6), <strong>Robot Builders</strong> (7–10), <strong>AI Innovators</strong> (11+), <strong>Future Engineers</strong> (12+), and <strong>Global Pathway</strong> (15–18). Every stage runs 8 weeks with a finished project every week. See <a href="programs.html">Programs &amp; Courses</a>.'
+      a: ['One clear pathway across five age stages: ', { b: 'Little Explorers' }, ' (4–6), ', { b: 'Robot Builders' }, ' (7–10), ', { b: 'AI Innovators' }, ' (11+), ', { b: 'Future Engineers' }, ' (12+), and ', { b: 'Global Pathway' }, ' (15–18). Every stage runs 8 weeks with a finished project every week. See ', { a: 'Programs & Courses', href: '/programs' }, '.']
     },
     {
       q: 'Why choose this academy?',
-      a: 'Our founders bring 5+ years leading youth robotics programs (iSchool, Engineeius, BigHero, IEEE). Every course includes a finished project every week, a Demo Day for parents, weekly progress updates, a certificate at every level, and a competition path for top students.'
+      a: ['Our founders bring 5+ years leading youth robotics programs (iSchool, Engineeius, BigHero, IEEE). Every course includes a finished project every week, a Demo Day for parents, weekly progress updates, a certificate at every level, and a competition path for top students.']
     },
     {
       q: 'How do I enroll my child?',
-      a: 'Choose the right age track, then reach out so we can confirm your place — <a href="mailto:academy@eraboticseg.com">academy@eraboticseg.com</a> or +20 101 539 7943 / +20 111 333 7137. Or visit our <a href="contact.html">Contact page</a>.'
+      a: ['Choose the right age track, then reach out so we can confirm your place — ', { a: 'academy@eraboticseg.com', href: 'mailto:academy@eraboticseg.com' }, ' or +20 101 539 7943 / +20 111 333 7137. Or visit our ', { a: 'Contact page', href: '/contact' }, '.']
     },
     {
       q: 'Where are classes held?',
-      a: "Courses run on-site, at your school — no extra commute. If ERABOTICS isn't at your school yet, see <a href=\"partners.html\">Schools &amp; Partners</a> about bringing us there."
+      a: ["Courses run on-site, at your school — no extra commute. If ERABOTICS isn't at your school yet, see ", { a: 'Schools & Partners', href: '/partners' }, ' about bringing us there.']
     },
     {
       q: 'Who teaches the courses?',
-      a: 'Kareem (Co-Founder &amp; Tech Lead, Communication &amp; Electronics Engineer) and Adham (Co-Founder &amp; Hardware Lead, Electronics &amp; Robotics Engineer) — both with 5 years mentoring youth in robotics and electronics. See <a href="about.html">About</a>.'
+      a: ['Kareem (Co-Founder & Tech Lead, Communication & Electronics Engineer) and Adham (Co-Founder & Hardware Lead, Electronics & Robotics Engineer) — both with 5 years mentoring youth in robotics and electronics. See ', { a: 'About', href: '/about' }, '.']
     },
     {
       q: 'Do you offer any discounts?',
-      a: 'Yes — <strong>Sibling 10%</strong> off for a second child, <strong>Referral 10%</strong> for bringing a friend who enrolls, and <strong>Early Bird 5%</strong> for registering early. Discounts can be combined.'
+      a: ['Yes — ', { b: 'Sibling 10%' }, ' off for a second child, ', { b: 'Referral 10%' }, ' for bringing a friend who enrolls, and ', { b: 'Early Bird 5%' }, ' for registering early. Discounts can be combined.']
     }
   ];
 
+  const el = (tag, cls, text) => {
+    const n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (text != null) n.textContent = text;
+    return n;
+  };
+  const svgIcon = (cls, d) => {
+    const ns = 'http://www.w3.org/2000/svg';
+    const svg = document.createElementNS(ns, 'svg');
+    svg.setAttribute('class', cls);
+    svg.setAttribute('viewBox', '0 0 24 24');
+    svg.setAttribute('fill', 'none');
+    svg.setAttribute('stroke', 'currentColor');
+    svg.setAttribute('stroke-width', '1.8');
+    svg.setAttribute('stroke-linecap', 'round');
+    svg.setAttribute('stroke-linejoin', 'round');
+    svg.setAttribute('aria-hidden', 'true');
+    const path = document.createElementNS(ns, 'path');
+    path.setAttribute('d', d);
+    svg.appendChild(path);
+    return svg;
+  };
+  const renderAnswer = (parts) => {
+    const frag = document.createDocumentFragment();
+    parts.forEach((part) => {
+      if (typeof part === 'string') frag.append(part);
+      else if (part.b) frag.appendChild(el('strong', null, part.b));
+      else if (part.a) {
+        const link = el('a', null, part.a);
+        link.href = part.href;
+        frag.appendChild(link);
+      }
+    });
+    return frag;
+  };
+
   document.addEventListener('DOMContentLoaded', () => {
-    const widget = document.createElement('div');
-    widget.className = 'chat-widget';
-    widget.innerHTML =
-      '<button class="chat-fab" type="button" aria-label="Ask a question about ERABOTICS" aria-expanded="false" aria-controls="chat-panel">' +
-        '<svg class="chat-fab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>' +
-        '<svg class="chat-fab-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg>' +
-      '</button>' +
-      '<div class="chat-panel" id="chat-panel" role="dialog" aria-label="Quick answers about ERABOTICS">' +
-        '<div class="chat-header"><span>Ask ERABOTICS</span><span class="chat-header-sub">Quick answers, instantly</span></div>' +
-        '<div class="chat-body">' +
-          '<div class="chat-messages" aria-live="polite"><div class="chat-msg chat-msg-bot">Hi! Pick a question below and I’ll answer right away.</div></div>' +
-          '<div class="chat-questions"></div>' +
-        '</div>' +
-      '</div>';
+    const widget = el('div', 'chat-widget');
+
+    const fab = el('button', 'chat-fab');
+    fab.type = 'button';
+    fab.setAttribute('aria-label', 'Ask a question about ERABOTICS');
+    fab.setAttribute('aria-expanded', 'false');
+    fab.setAttribute('aria-controls', 'chat-panel');
+    fab.append(
+      svgIcon('chat-fab-icon', 'M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z'),
+      svgIcon('chat-fab-close', 'M18 6 6 18M6 6l12 12')
+    );
+
+    const panel = el('div', 'chat-panel');
+    panel.id = 'chat-panel';
+    panel.setAttribute('role', 'dialog');
+    panel.setAttribute('aria-label', 'Quick answers about ERABOTICS');
+    const header = el('div', 'chat-header');
+    header.append(el('span', null, 'Ask ERABOTICS'), el('span', 'chat-header-sub', 'Quick answers, instantly'));
+    const bodyEl = el('div', 'chat-body');
+    const messagesEl = el('div', 'chat-messages');
+    messagesEl.setAttribute('aria-live', 'polite');
+    messagesEl.appendChild(el('div', 'chat-msg chat-msg-bot', 'Hi! Pick a question below and I’ll answer right away.'));
+    const questionsEl = el('div', 'chat-questions');
+    bodyEl.append(messagesEl, questionsEl);
+    panel.append(header, bodyEl);
+    widget.append(fab, panel);
     document.body.appendChild(widget);
 
-    const messagesEl = widget.querySelector('.chat-messages');
-    const questionsEl = widget.querySelector('.chat-questions');
-    const bodyEl = widget.querySelector('.chat-body');
-    const fab = widget.querySelector('.chat-fab');
-
     FAQS.forEach((item) => {
-      const chip = document.createElement('button');
-      chip.className = 'chat-question-chip';
+      const chip = el('button', 'chat-question-chip', item.q);
       chip.type = 'button';
-      chip.textContent = item.q;
       chip.addEventListener('click', () => {
-        const userMsg = document.createElement('div');
-        userMsg.className = 'chat-msg chat-msg-user';
-        userMsg.textContent = item.q;
-        messagesEl.appendChild(userMsg);
-
-        const botMsg = document.createElement('div');
-        botMsg.className = 'chat-msg chat-msg-bot';
-        botMsg.innerHTML = item.a;
+        messagesEl.appendChild(el('div', 'chat-msg chat-msg-user', item.q));
+        const botMsg = el('div', 'chat-msg chat-msg-bot');
+        botMsg.appendChild(renderAnswer(item.a));
         messagesEl.appendChild(botMsg);
-
         chip.classList.add('asked');
         bodyEl.scrollTop = bodyEl.scrollHeight;
       });

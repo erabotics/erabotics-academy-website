@@ -102,16 +102,29 @@
     drawer = document.createElement('dialog');
     drawer.className = 'cart-drawer';
     drawer.setAttribute('aria-labelledby', 'cart-title');
-    drawer.innerHTML =
-      '<div class="cd-head"><h2 id="cart-title">Your cart</h2>' +
-      '<button type="button" class="dialog-close" data-close aria-label="Close cart"><svg aria-hidden="true"><use href="#icon-close"></use></svg></button></div>' +
-      '<div class="cd-body"></div>' +
-      '<div class="cd-foot">' +
-        '<div class="cd-total"><span>Subtotal</span><strong></strong></div>' +
-        '<p class="fine-print">Prices in EGP. We confirm stock, delivery and the final total when we call you.</p>' +
-        '<a href="/checkout" class="btn btn-primary btn-block">Checkout <svg aria-hidden="true"><use href="#icon-arrow"></use></svg></a>' +
-        '<button type="button" class="btn btn-outline btn-block" data-close>Continue shopping</button>' +
-      '</div>';
+    // Built with DOM APIs (no innerHTML)
+    const head = el('div', 'cd-head');
+    const title = el('h2', null, 'Your cart');
+    title.id = 'cart-title';
+    const close = el('button', 'dialog-close');
+    close.type = 'button';
+    close.dataset.close = '';
+    close.setAttribute('aria-label', 'Close cart');
+    close.appendChild(icon('close'));
+    head.append(title, close);
+
+    const foot = el('div', 'cd-foot');
+    const total = el('div', 'cd-total');
+    total.append(el('span', null, 'Subtotal'), el('strong'));
+    const checkout = el('a', 'btn btn-primary btn-block', 'Checkout ');
+    checkout.href = '/checkout';
+    checkout.appendChild(icon('arrow'));
+    const keepShopping = el('button', 'btn btn-outline btn-block', 'Continue shopping');
+    keepShopping.type = 'button';
+    keepShopping.dataset.close = '';
+    foot.append(total, el('p', 'fine-print', 'Prices in EGP. We confirm stock, delivery and the final total when we call you.'), checkout, keepShopping);
+
+    drawer.append(head, el('div', 'cd-body'), foot);
     document.body.appendChild(drawer);
     drawer.addEventListener('click', (e) => {
       if (e.target === drawer || e.target.closest('[data-close]')) drawer.close();
