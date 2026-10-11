@@ -1,0 +1,6 @@
+# ERABOTICS Academy security contact (RFC 9116)
+Contact: mailto:academy@eraboticseg.com
+Contact: https://wa.me/201015397943
+Expires: 2027-10-11T00:00:00.000Z
+Preferred-Languages: en, ar
+Canonical: https://www.eraboticseg.com/.well-known/security.txt
