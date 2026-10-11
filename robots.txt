@@ -1,0 +1,6 @@
+# ERABOTICS Academy — https://www.eraboticseg.com
+User-agent: *
+Allow: /
+Disallow: /checkout
+
+Sitemap: https://www.eraboticseg.com/sitemap.xml
