@@ -153,8 +153,8 @@
         <div class="form-card">
           <h2 class="form-title">Send us a message</h2>
           <p class="form-intro">We'll route your message to the right team — Academy, Partnerships, or the Store.</p>
-          <form data-form data-sheet="https://script.google.com/macros/s/AKfycbxMVs1V1PjSnPmYh-KaWnmqgCGjYRC5kY_jtf6qNRXT5Xw5QcZqEjclfsoe9K-PfPHe/exec" action="https://formspree.io/f/mjykprzv" method="POST">
-            <input type="hidden" name="_subject" value="New message from eraboticseg.com">
+          <form data-form action="/api/contact" method="POST">
+            <input type="hidden" name="kind" value="contact">
             <input type="text" name="_gotcha" class="hp-field" tabindex="-1" autocomplete="off" aria-hidden="true">
             <div class="form-row">
               <div class="field">

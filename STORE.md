@@ -29,9 +29,9 @@ Products with real photos are listed first in the Store's "Featured" order. Only
 
 ## Orders
 
-Checkout sends each order (reference number, items with SKUs, total, customer details) by email through the same Formspree form as the contact page. No payment is taken online: the team calls to confirm stock, delivery and the total, then collects cash on delivery or an InstaPay transfer.
+Checkout sends only product IDs and quantities to `POST /api/order`. The server looks up the real prices from `assets/data/catalog.json`, validates the customer details, saves the order in the database and (if `FORMSPREE_ENDPOINT` is set) emails the team. Staff see and update orders at **/admin** (sign-in required — see `SECURITY.md`). No payment is taken online: the team calls to confirm stock, delivery and the total, then collects cash on delivery or an InstaPay transfer.
 
-Always check the SKUs and prices in an order email against the catalog before confirming — the order is assembled in the customer's browser.
+Because prices are checked on the server, an order total can no longer be tampered with in the browser.
 
 ## Security
 

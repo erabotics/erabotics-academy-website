@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<script>(function(){var d=document.documentElement;d.classList.add('js');try{var t=localStorage.getItem('erabotics-theme')||(window.matchMedia('(prefers-color-scheme: light)').matches?'light':'dark');d.setAttribute('data-theme',t);}catch(e){d.setAttribute('data-theme','dark');}})();</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — ERABOTICS</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<meta name="theme-color" content="#070b14">
+<link rel="icon" type="image/png" href="assets/img/erabotics-mark.png">
+<link rel="stylesheet" href="assets/css/fonts.css">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body class="admin-body">
+
+<header class="admin-bar">
+  <a href="/" class="brand" aria-label="ERABOTICS website">
+    <img src="assets/img/erabotics-mark.png" alt="" class="brand-mark" width="34" height="34">
+    <span class="brand-name"><b>ERA</b>botics</span>
+    <span class="brand-tag">Admin</span>
+  </a>
+  <div class="admin-session" id="admin-session" hidden>
+    <span class="mono" id="admin-user"></span>
+    <span class="admin-timer" id="admin-timer" title="You are signed out automatically after a period of inactivity"></span>
+    <button type="button" class="btn btn-outline btn-sm" id="admin-logout">Sign out</button>
+  </div>
+</header>
+
+<main id="main" class="admin-main">
+
+  <section class="admin-login" id="view-login" aria-labelledby="login-title">
+    <div class="form-card">
+      <span class="mono admin-eyebrow">Restricted area</span>
+      <h1 id="login-title" class="form-title">Team sign-in</h1>
+      <p class="form-intro">For ERABOTICS staff only. You'll be signed out automatically after <span id="idle-minutes">30</span> minutes of inactivity.</p>
+      <p class="form-status is-error" id="login-notice" role="alert" hidden></p>
+      <form id="login-form" novalidate>
+        <div class="field">
+          <label for="login-user">Username</label>
+          <input type="text" id="login-user" name="username" autocomplete="username" required maxlength="80" autocapitalize="off" spellcheck="false">
+        </div>
+        <div class="field">
+          <label for="login-pass">Password</label>
+          <input type="password" id="login-pass" name="password" autocomplete="current-password" required maxlength="200">
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Sign in</button>
+      </form>
+    </div>
+  </section>
+
+  <section class="admin-app" id="view-app" hidden aria-label="Admin dashboard">
+    <div class="admin-toolbar">
+      <div class="admin-tabs" role="tablist" aria-label="Data">
+        <button type="button" role="tab" id="tab-orders" aria-selected="true" aria-controls="panel">Orders</button>
+        <button type="button" role="tab" id="tab-messages" aria-selected="false" aria-controls="panel">Messages</button>
+      </div>
+      <div class="admin-filters">
+        <label class="shop-select"><span class="visually-hidden">Status filter</span><select id="status-filter"></select></label>
+        <button type="button" class="btn btn-outline btn-sm" id="refresh">Refresh</button>
+      </div>
+    </div>
+    <p class="mono admin-count" id="admin-count" aria-live="polite"></p>
+    <div id="panel" role="tabpanel" class="admin-list"></div>
+  </section>
+
+</main>
+
+<dialog class="product-dialog admin-timeout" id="timeout-dialog" aria-labelledby="timeout-title">
+  <div class="admin-timeout-inner">
+    <span class="mono admin-eyebrow">Session</span>
+    <h2 id="timeout-title" class="form-title">Still there?</h2>
+    <p>You'll be signed out in <strong id="timeout-left">2:00</strong> because of inactivity.</p>
+    <div class="cta-actions">
+      <button type="button" class="btn btn-primary" id="stay-signed-in">Stay signed in</button>
+      <button type="button" class="btn btn-outline" id="timeout-logout">Sign out now</button>
+    </div>
+  </div>
+</dialog>
+
+<script src="assets/js/admin.js"></script>
+</body>
+</html>

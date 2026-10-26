@@ -136,12 +136,7 @@
         <div id="checkout-form-wrap">
           <h2 class="form-title">Your details</h2>
           <p class="form-intro">We use these only to confirm and deliver your order.</p>
-          <form id="checkout-form" action="https://formspree.io/f/mjykprzv" method="POST" novalidate>
-            <input type="hidden" name="_subject" value="New store order — eraboticseg.com">
-            <input type="hidden" name="form" value="Store order">
-            <input type="hidden" name="order_id">
-            <input type="hidden" name="order">
-            <input type="hidden" name="order_total">
+          <form id="checkout-form" action="/api/order" method="POST" novalidate>
             <input type="text" name="_gotcha" class="hp-field" tabindex="-1" autocomplete="off" aria-hidden="true">
             <div class="form-row">
               <div class="field">

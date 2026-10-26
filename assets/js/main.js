@@ -88,39 +88,42 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('scroll', onScroll, { passive: true });
   }
 
-  // Contact / lead forms: submit to Formspree (email) and, if the form has
-  // a data-sheet URL, log a copy to a Google Sheet in parallel
+  // Contact / application forms: sent as JSON to our own API (/api/contact),
+  // which validates them and stores / forwards them server-side.
   document.querySelectorAll('form[data-form]').forEach((form) => {
+    const status = document.createElement('p');
+    status.className = 'form-status';
+    status.setAttribute('role', 'status');
+    status.hidden = true;
+    form.appendChild(status);
+
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
+      if (!form.checkValidity()) { form.reportValidity(); return; }
       const btn = form.querySelector('button[type="submit"]');
       const original = btn ? btn.textContent : '';
-      if (btn) {
-        btn.textContent = 'Sending…';
-        btn.disabled = true;
-      }
+      if (btn) { btn.textContent = 'Sending…'; btn.disabled = true; }
+      status.hidden = true;
 
-      const emailSend = fetch(form.action, {
-        method: 'POST',
-        body: new FormData(form),
-        headers: { Accept: 'application/json' }
-      }).then((r) => r.ok).catch(() => false);
+      let ok = false;
+      let message = 'Something went wrong — please try again, or contact us on WhatsApp.';
+      try {
+        const r = await fetch(form.action, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+          body: JSON.stringify(Object.fromEntries(new FormData(form))),
+          credentials: 'same-origin'
+        });
+        const data = await r.json().catch(() => ({}));
+        ok = r.ok && data.ok;
+        if (!ok && data.error) message = data.error;
+      } catch (err) { /* network error — keep the generic message */ }
 
-      const sheetUrl = form.dataset.sheet;
-      const sheetSend = sheetUrl
-        ? fetch(sheetUrl, { method: 'POST', mode: 'no-cors', body: new FormData(form) }).catch(() => {})
-        : Promise.resolve();
-
-      const [ok] = await Promise.all([emailSend, sheetSend]);
-
-      if (btn) {
-        btn.textContent = ok ? 'Sent — we’ll be in touch' : 'Something went wrong — try again';
-      }
       if (ok) form.reset();
-
-      setTimeout(() => {
-        if (btn) { btn.textContent = original; btn.disabled = false; }
-      }, 4000);
+      status.textContent = ok ? 'Sent — we’ll be in touch soon.' : message;
+      status.classList.toggle('is-error', !ok);
+      status.hidden = false;
+      if (btn) { btn.textContent = original; btn.disabled = false; }
     });
   });
 

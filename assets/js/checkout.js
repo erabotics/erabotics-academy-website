@@ -1,14 +1,9 @@
-// ERABOTICS Store checkout — sends the order to the team by email (Formspree).
+// ERABOTICS Store checkout — sends the order to /api/order, which checks prices
+// on the server, saves the order and notifies the team.
 // No payment is taken online: the team confirms by phone (cash on delivery / InstaPay).
 (function () {
   const $ = (id) => document.getElementById(id);
 
-  const orderId = () => {
-    const d = new Date();
-    const pad = (n) => String(n).padStart(2, '0');
-    const rand = Math.random().toString(36).slice(2, 6).toUpperCase();
-    return `ER-${String(d.getFullYear()).slice(2)}${pad(d.getMonth() + 1)}${pad(d.getDate())}-${rand}`;
-  };
 
   document.addEventListener('DOMContentLoaded', async () => {
     const form = $('checkout-form');
@@ -61,23 +56,26 @@
         return;
       }
 
-      const id = orderId();
-      const items = cart.items();
-      form.elements.order_id.value = id;
-      form.elements.order.value = items
-        .map((i) => `${i.qty} × ${i.name}${i.sku ? ` [SKU ${i.sku}]` : ''} @ ${cart.money(i.price)} = ${cart.money(i.qty * i.price)}`)
-        .join('\n');
-      form.elements.order_total.value = cart.money(cart.total());
-      form.elements._subject.value = `New store order ${id} — ${cart.money(cart.total())}`;
-
+      const items = cart.items().map((i) => ({ id: i.id, qty: i.qty }));
+      const fields = Object.fromEntries(new FormData(form));
       const label = submit.textContent;
       submit.disabled = true;
       submit.textContent = 'Sending order…';
       let ok = false;
+      let data = {};
       try {
-        const r = await fetch(form.action, { method: 'POST', body: new FormData(form), headers: { Accept: 'application/json' } });
-        ok = r.ok;
+        // Only product IDs and quantities are sent — the server looks up the
+        // real prices from the catalog and creates the order reference.
+        const r = await fetch(form.action, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+          body: JSON.stringify({ ...fields, items }),
+          credentials: 'same-origin'
+        });
+        data = await r.json().catch(() => ({}));
+        ok = r.ok && data.ok;
       } catch (err) { ok = false; }
+      const id = data.ref;
 
       if (ok) {
         cart.clear();
@@ -87,7 +85,7 @@
         done.hidden = false;
         done.focus();
       } else {
-        error.textContent = 'Your order could not be sent. Please try again, or send it on WhatsApp: +20 101 539 7943.';
+        error.textContent = data.error || 'Your order could not be sent. Please try again, or send it on WhatsApp: +20 101 539 7943.';
         error.hidden = false;
         submit.disabled = false;
         submit.textContent = label;
