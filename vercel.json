@@ -1,6 +1,13 @@
 {
   "cleanUrls": true,
   "trailingSlash": false,
+  "redirects": [
+    {
+      "source": "/requirements.txt",
+      "destination": "/",
+      "permanent": false
+    }
+  ],
   "functions": {
     "api/*.py": {
       "maxDuration": 10,
