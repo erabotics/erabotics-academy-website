@@ -61,4 +61,12 @@ SHEET_WEBHOOK_URL = env('SHEET_WEBHOOK_URL')
 # Extra allowed origins for state-changing requests (comma-separated).
 ALLOWED_ORIGINS = [o.strip().rstrip('/') for o in env('ALLOWED_ORIGINS').split(',') if o.strip()]
 
+# SuperClass (teacher sign-in at /superclass). Teachers sign in with Google on their
+# phone; this is the OAuth "Web application" Client ID (public, not a secret).
+GOOGLE_CLIENT_ID = env('GOOGLE_CLIENT_ID')
+# The Google email that is made the first SuperClass admin on its first sign-in.
+SUPERCLASS_ADMIN_EMAIL = env('SUPERCLASS_ADMIN_EMAIL').lower()
+# Local testing only: lets you sign in by email without Google. Ignored on Vercel.
+SUPERCLASS_DEV_LOGIN = (not ON_VERCEL) and env('SUPERCLASS_DEV_LOGIN') == '1'
+
 CATALOG_PATH = os.path.join(ROOT, 'assets', 'data', 'catalog.json')

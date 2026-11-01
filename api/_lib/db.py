@@ -50,6 +50,29 @@ SCHEMA = [
         client TEXT NOT NULL,
         at BIGINT NOT NULL
     )""",
+    # SuperClass: teacher accounts (Google email), sign-in sessions, smart-board QR requests
+    """CREATE TABLE IF NOT EXISTS sc_users (
+        id TEXT PRIMARY KEY,
+        email TEXT NOT NULL UNIQUE,
+        name TEXT NOT NULL,
+        role TEXT NOT NULL,
+        created_at BIGINT NOT NULL
+    )""",
+    """CREATE TABLE IF NOT EXISTS sc_sessions (
+        token_hash TEXT PRIMARY KEY,
+        user_id TEXT NOT NULL,
+        kind TEXT NOT NULL,
+        created_at BIGINT NOT NULL,
+        expires_at BIGINT NOT NULL
+    )""",
+    """CREATE TABLE IF NOT EXISTS sc_pairs (
+        code TEXT PRIMARY KEY,
+        secret_hash TEXT NOT NULL,
+        pin TEXT NOT NULL,
+        user_id TEXT,
+        attempts INTEGER NOT NULL DEFAULT 0,
+        expires_at BIGINT NOT NULL
+    )""",
     "CREATE INDEX IF NOT EXISTS rate_events_lookup ON rate_events (bucket, client, at)",
     "CREATE INDEX IF NOT EXISTS orders_created ON orders (created_at)",
     "CREATE INDEX IF NOT EXISTS messages_created ON messages (created_at)",
