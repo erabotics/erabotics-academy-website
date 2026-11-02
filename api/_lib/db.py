@@ -73,9 +73,77 @@ SCHEMA = [
         attempts INTEGER NOT NULL DEFAULT 0,
         expires_at BIGINT NOT NULL
     )""",
+    # SuperClass schools (branches such as "Manhattan"): each has its own staff, classes and students
+    """CREATE TABLE IF NOT EXISTS sc_schools (
+        id TEXT PRIMARY KEY,
+        name TEXT NOT NULL,
+        city TEXT NOT NULL DEFAULT '',
+        status TEXT NOT NULL DEFAULT 'active',
+        settings TEXT NOT NULL DEFAULT '{}',
+        created_at BIGINT NOT NULL
+    )""",
+    """CREATE TABLE IF NOT EXISTS sc_classes (
+        id TEXT PRIMARY KEY,
+        school_id TEXT NOT NULL,
+        name TEXT NOT NULL,
+        level TEXT NOT NULL DEFAULT '',
+        schedule TEXT NOT NULL DEFAULT '',
+        archived INTEGER NOT NULL DEFAULT 0,
+        created_at BIGINT NOT NULL
+    )""",
+    """CREATE TABLE IF NOT EXISTS sc_class_teachers (
+        class_id TEXT NOT NULL,
+        user_id TEXT NOT NULL,
+        PRIMARY KEY (class_id, user_id)
+    )""",
+    """CREATE TABLE IF NOT EXISTS sc_students (
+        id TEXT PRIMARY KEY,
+        school_id TEXT NOT NULL,
+        name TEXT NOT NULL,
+        photo TEXT NOT NULL DEFAULT '',
+        active INTEGER NOT NULL DEFAULT 1,
+        created_at BIGINT NOT NULL
+    )""",
+    """CREATE TABLE IF NOT EXISTS sc_enrollments (
+        class_id TEXT NOT NULL,
+        student_id TEXT NOT NULL,
+        PRIMARY KEY (class_id, student_id)
+    )""",
+    """CREATE TABLE IF NOT EXISTS sc_points (
+        id TEXT PRIMARY KEY,
+        school_id TEXT NOT NULL,
+        class_id TEXT NOT NULL,
+        student_id TEXT NOT NULL,
+        delta INTEGER NOT NULL,
+        reason TEXT NOT NULL DEFAULT '',
+        by_user TEXT NOT NULL,
+        at BIGINT NOT NULL,
+        undone INTEGER NOT NULL DEFAULT 0
+    )""",
+    """CREATE TABLE IF NOT EXISTS sc_audit (
+        id TEXT PRIMARY KEY,
+        at BIGINT NOT NULL,
+        school_id TEXT,
+        user_id TEXT,
+        user_name TEXT NOT NULL,
+        action TEXT NOT NULL,
+        detail TEXT NOT NULL DEFAULT ''
+    )""",
+    "CREATE INDEX IF NOT EXISTS sc_points_class ON sc_points (class_id, student_id)",
+    "CREATE INDEX IF NOT EXISTS sc_points_school ON sc_points (school_id, at)",
+    "CREATE INDEX IF NOT EXISTS sc_audit_school ON sc_audit (school_id, at)",
+    "CREATE INDEX IF NOT EXISTS sc_students_school ON sc_students (school_id)",
+    "CREATE INDEX IF NOT EXISTS sc_classes_school ON sc_classes (school_id)",
     "CREATE INDEX IF NOT EXISTS rate_events_lookup ON rate_events (bucket, client, at)",
     "CREATE INDEX IF NOT EXISTS orders_created ON orders (created_at)",
     "CREATE INDEX IF NOT EXISTS messages_created ON messages (created_at)",
+]
+
+# Columns added after a table first shipped (CREATE TABLE IF NOT EXISTS never alters a live table)
+COLUMN_MIGRATIONS = [
+    ('sc_users', 'school_id', 'TEXT'),
+    ('sc_users', 'status', "TEXT NOT NULL DEFAULT 'active'"),
+    ('sc_users', 'last_login', 'BIGINT'),
 ]
 
 _initialised = False
@@ -107,6 +175,14 @@ def _sql(query):
     return query.replace('?', '%s') if _is_postgres() else query
 
 
+def _has_column(cur, table, column):
+    if _is_postgres():
+        cur.execute('SELECT 1 FROM information_schema.columns WHERE table_name = %s AND column_name = %s', (table, column))
+        return cur.fetchone() is not None
+    cur.execute(f'PRAGMA table_info({table})')
+    return any(row[1] == column for row in cur.fetchall())
+
+
 @contextmanager
 def connection():
     global _initialised
@@ -116,6 +192,9 @@ def connection():
             cur = conn.cursor()
             for stmt in SCHEMA:
                 cur.execute(stmt)
+            for table, column, definition in COLUMN_MIGRATIONS:
+                if not _has_column(cur, table, column):
+                    cur.execute(f'ALTER TABLE {table} ADD COLUMN {column} {definition}')  # fixed internal names
             conn.commit()
             _initialised = True
         yield conn

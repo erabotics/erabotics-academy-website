@@ -2,7 +2,6 @@
 responses with safe headers, and turning errors into JSON."""
 import json
 import traceback
-from http.cookies import SimpleCookie
 from urllib.parse import parse_qs
 
 MAX_BODY = 32 * 1024  # bytes — forms and orders are small
@@ -16,7 +15,7 @@ class ApiError(Exception):
         self.extra = extra or {}
 
 
-def read_body(handler, json_only=False):
+def read_body(handler, json_only=False, max_body=MAX_BODY):
     """Parse a JSON (or, for public forms, urlencoded) body with a size limit."""
     try:
         length = int(handler.headers.get('Content-Length') or 0)
@@ -24,7 +23,7 @@ def read_body(handler, json_only=False):
         raise ApiError(400, 'Invalid request.')
     if length <= 0:
         raise ApiError(400, 'Empty request.')
-    if length > MAX_BODY:
+    if length > max_body:
         raise ApiError(413, 'Request is too large.')
     raw = handler.rfile.read(length)
     ctype = (handler.headers.get('Content-Type') or '').split(';')[0].strip().lower()
@@ -45,13 +44,14 @@ def read_body(handler, json_only=False):
 
 
 def get_cookie(handler, name):
-    jar = SimpleCookie()
-    try:
-        jar.load(handler.headers.get('Cookie') or '')
-    except Exception:
-        return None
-    morsel = jar.get(name)
-    return morsel.value if morsel else None
+    """Read one cookie by name. Parsed by hand: other scripts (for example Google's sign-in
+    adds `g_state={"i_l":0,...}`) set cookies with quotes and commas, and SimpleCookie
+    then drops every cookie in the header, including ours."""
+    for part in (handler.headers.get('Cookie') or '').split(';'):
+        key, sep, value = part.strip().partition('=')
+        if sep and key == name:
+            return value.strip().strip('"')
+    return None
 
 
 def send_json(handler, status, payload, cookies=()):

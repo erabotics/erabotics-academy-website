@@ -1,4 +1,9 @@
-"""SuperClass endpoint logic (teacher sign-in). api/superclass.py routes here.
+"""SuperClass core: sign-in, sessions, roles, QR pairing. api/superclass.py routes here.
+
+Roles
+  admin         the platform owner (ERAbotics): sees every school and creates schools
+  school_admin  runs one school (a branch such as "Manhattan"): its staff, classes, students
+  teacher       runs Live Class for the classes assigned to them
 
 How a teacher signs in:
   1. The smart board asks for a pairing request and shows a QR code plus a 4-digit PIN.
@@ -7,6 +12,7 @@ How a teacher signs in:
 
 Only Google emails an admin has added can sign in. Sessions are random tokens kept
 server-side (only their hash is stored) in an HttpOnly cookie, like the admin area.
+Schools, classes, students and points live in sc_data.py.
 """
 import hashlib
 import hmac
@@ -18,7 +24,9 @@ from urllib.request import Request as UrlRequest, urlopen
 from . import config, db, security, validate
 from .web import ApiError, get_cookie, read_body
 
-COOKIE_NAME = '__Host-sc_session'
+# Production: __Host- prefix (Secure, Path=/, no Domain). Local http development cannot use Secure cookies.
+COOKIE_NAME = '__Host-sc_session' if config.ON_VERCEL else 'sc_session'
+COOKIE_FLAGS = 'HttpOnly; Secure; SameSite=Strict' if config.ON_VERCEL else 'HttpOnly; SameSite=Strict'
 PHONE_SESSION_SECONDS = 30 * 86400   # a teacher's phone stays signed in for a month
 BOARD_SESSION_SECONDS = 12 * 3600    # a smart-board sign-in lasts one school day
 PAIR_TTL_SECONDS = 120
@@ -26,15 +34,22 @@ PAIR_PIN_ATTEMPTS = 5
 PAIR_START_LIMIT = (20, 600)         # 20 QR codes per 10 minutes per connection
 LOGIN_LIMIT = (10, 900)              # 10 failed sign-ins per 15 minutes per connection
 
+ROLES = ('admin', 'school_admin', 'teacher')
 
-def _require_origin(handler):
+
+# ---------------------------------------------------------------- small helpers
+def require_origin(handler):
     if not security.origin_allowed(handler):
         raise ApiError(403, 'Request blocked.')
 
 
-def _ready():
+def ready():
     if not db.configured():
         raise ApiError(503, 'SuperClass sign-in is not set up yet.')
+
+
+def new_id():
+    return secrets.token_hex(8)
 
 
 def _hash(value):
@@ -42,15 +57,38 @@ def _hash(value):
 
 
 def _cookie(token, max_age):
-    return (f'{COOKIE_NAME}={token}; Path=/; Max-Age={max_age}; HttpOnly; Secure; SameSite=Strict')
+    return f'{COOKIE_NAME}={token}; Path=/; Max-Age={max_age}; {COOKIE_FLAGS}'
 
 
 def _clear_cookie():
     return _cookie('', 0)
 
 
-def _public(user):
-    return {'id': user['id'], 'name': user['name'], 'email': user['email'], 'role': user['role']}
+def public_user(user):
+    return {
+        'id': user['id'], 'name': user['name'], 'email': user['email'], 'role': user['role'],
+        'schoolId': user.get('school_id'), 'schoolName': user.get('school_name'),
+        'status': user.get('status', 'active'), 'lastLogin': user.get('last_login'),
+    }
+
+
+def audit(conn, user, action, detail='', school_id=None):
+    """Record who did what (shown to admins in the Activity log)."""
+    db.execute(conn, 'INSERT INTO sc_audit (id, at, school_id, user_id, user_name, action, detail) VALUES (?, ?, ?, ?, ?, ?, ?)',
+               (new_id(), int(time.time()), school_id if school_id is not None else (user or {}).get('school_id'),
+                (user or {}).get('id'), (user or {}).get('name') or 'System', action, detail[:300]))
+
+
+USER_SELECT = '''SELECT u.id, u.name, u.email, u.role, u.school_id, u.status, u.last_login,
+                        sch.name AS school_name, sch.status AS school_status
+                 FROM sc_users u LEFT JOIN sc_schools sch ON sch.id = u.school_id'''
+
+
+def _check_active(user):
+    if user['status'] != 'active':
+        raise ApiError(403, 'Your account is paused. Ask your admin.')
+    if user['role'] != 'admin' and user.get('school_id') and user.get('school_status') != 'active':
+        raise ApiError(403, 'Your school is paused. Ask your admin.')
 
 
 def _new_session(conn, user_id, kind, seconds):
@@ -59,39 +97,34 @@ def _new_session(conn, user_id, kind, seconds):
     db.execute(conn, 'DELETE FROM sc_sessions WHERE expires_at < ?', (now,))
     db.execute(conn, 'INSERT INTO sc_sessions (token_hash, user_id, kind, created_at, expires_at) VALUES (?, ?, ?, ?, ?)',
                (_hash(token), user_id, kind, now, now + seconds))
+    db.execute(conn, 'UPDATE sc_users SET last_login = ? WHERE id = ?', (now, user_id))
     return token
 
 
-def _current_user(handler, conn):
+def current_user(handler, conn):
     token = get_cookie(handler, COOKIE_NAME)
     if not token or len(token) > 100:
         raise ApiError(401, 'Please sign in.')
-    row = db.fetch_one(conn, '''SELECT u.id, u.name, u.email, u.role FROM sc_sessions s
-                                JOIN sc_users u ON u.id = s.user_id
-                                WHERE s.token_hash = ? AND s.expires_at > ?''', (_hash(token), int(time.time())))
+    row = db.fetch_one(conn, USER_SELECT.replace('FROM sc_users u', 'FROM sc_sessions s JOIN sc_users u ON u.id = s.user_id')
+                       + ' WHERE s.token_hash = ? AND s.expires_at > ?', (_hash(token), int(time.time())))
     if not row:
         raise ApiError(401, 'Please sign in.')
+    _check_active(row)
     return row
 
 
-def _require_admin(handler, conn):
-    user = _current_user(handler, conn)
-    if user['role'] != 'admin':
-        raise ApiError(403, 'Admins only.')
-    return user
-
-
 def _user_for_email(conn, email):
-    """The account for a verified email. The configured admin email is created on first use."""
+    """The account for a verified email. The configured owner email is created on first use."""
     email = email.strip().lower()
-    row = db.fetch_one(conn, 'SELECT * FROM sc_users WHERE email = ?', (email,))
+    row = db.fetch_one(conn, USER_SELECT + ' WHERE u.email = ?', (email,))
     if row:
+        _check_active(row)
         return row
     if config.SUPERCLASS_ADMIN_EMAIL and email == config.SUPERCLASS_ADMIN_EMAIL:
-        uid = secrets.token_hex(8)
+        uid = new_id()
         db.execute(conn, 'INSERT INTO sc_users (id, email, name, role, created_at) VALUES (?, ?, ?, ?, ?)',
                    (uid, email, 'Admin', 'admin', int(time.time())))
-        return db.fetch_one(conn, 'SELECT * FROM sc_users WHERE id = ?', (uid,))
+        return db.fetch_one(conn, USER_SELECT + ' WHERE u.id = ?', (uid,))
     return None
 
 
@@ -115,13 +148,13 @@ def _verify_google(credential):
     return info['email']
 
 
-def get_config(handler):
+def get_config(handler, query):
     return 200, {'ok': True, 'googleClientId': config.GOOGLE_CLIENT_ID or None, 'devLogin': config.SUPERCLASS_DEV_LOGIN}, ()
 
 
-def google_login(handler):
-    _ready()
-    _require_origin(handler)
+def google_login(handler, query):
+    ready()
+    require_origin(handler)
     if not config.GOOGLE_CLIENT_ID:
         raise ApiError(503, 'Google sign-in is not set up yet.')
     data = read_body(handler, json_only=True)
@@ -137,19 +170,24 @@ def google_login(handler):
         except Exception:
             security.record_event(conn, 'sc_login_fail', client)
             raise ApiError(401, 'Google sign-in failed. Try again.')
-        user = _user_for_email(conn, email)
+        try:
+            user = _user_for_email(conn, email)
+        except ApiError:
+            security.record_event(conn, 'sc_login_fail', client)
+            raise
         if not user:
             security.record_event(conn, 'sc_login_fail', client)
             raise ApiError(403, f'{email} is not registered. Ask your admin to add it.')
         token = _new_session(conn, user['id'], 'phone', PHONE_SESSION_SECONDS)
-    return 200, {'ok': True, 'user': _public(user)}, (_cookie(token, PHONE_SESSION_SECONDS),)
+        audit(conn, user, 'sign_in', 'Google (phone)')
+    return 200, {'ok': True, 'user': public_user(user)}, (_cookie(token, PHONE_SESSION_SECONDS),)
 
 
-def dev_login(handler):
+def dev_login(handler, query):
     """Local testing only (SUPERCLASS_DEV_LOGIN=1, never on Vercel): sign in by email, no Google."""
     if not config.SUPERCLASS_DEV_LOGIN:
         raise ApiError(404, 'Not found.')
-    _ready()
+    ready()
     data = read_body(handler, json_only=True)
     email = validate.text(data, 'email', 'Email', 150)
     with db.connection() as conn:
@@ -157,18 +195,18 @@ def dev_login(handler):
         if not user:
             raise ApiError(403, 'No account with that email.')
         token = _new_session(conn, user['id'], 'phone', PHONE_SESSION_SECONDS)
-    return 200, {'ok': True, 'user': _public(user)}, (_cookie(token, PHONE_SESSION_SECONDS),)
+    return 200, {'ok': True, 'user': public_user(user)}, (_cookie(token, PHONE_SESSION_SECONDS),)
 
 
-def me(handler):
-    _ready()
+def me(handler, query):
+    ready()
     with db.connection() as conn:
-        user = _current_user(handler, conn)
-    return 200, {'ok': True, 'user': _public(user)}, ()
+        user = current_user(handler, conn)
+    return 200, {'ok': True, 'user': public_user(user)}, ()
 
 
-def logout(handler):
-    _require_origin(handler)
+def logout(handler, query):
+    require_origin(handler)
     if db.configured():
         token = get_cookie(handler, COOKIE_NAME)
         if token:
@@ -177,49 +215,10 @@ def logout(handler):
     return 200, {'ok': True}, (_clear_cookie(),)
 
 
-# ---------------------------------------------------------------- admin: teachers
-def list_teachers(handler):
-    _ready()
-    with db.connection() as conn:
-        _require_admin(handler, conn)
-        rows = db.fetch_all(conn, "SELECT id, name, email, role FROM sc_users WHERE role = 'teacher' ORDER BY name")
-    return 200, {'ok': True, 'teachers': rows}, ()
-
-
-def add_teacher(handler):
-    _ready()
-    _require_origin(handler)
-    data = read_body(handler, json_only=True)
-    name = validate.text(data, 'name', 'Name', 100)
-    email = validate.email(data, required=True).lower()
-    with db.connection() as conn:
-        _require_admin(handler, conn)
-        if db.fetch_one(conn, 'SELECT id FROM sc_users WHERE email = ?', (email,)):
-            raise ApiError(409, 'That email already has an account.')
-        uid = secrets.token_hex(8)
-        db.execute(conn, 'INSERT INTO sc_users (id, email, name, role, created_at) VALUES (?, ?, ?, ?, ?)',
-                   (uid, email, name, 'teacher', int(time.time())))
-    return 201, {'ok': True, 'teacher': {'id': uid, 'name': name, 'email': email, 'role': 'teacher'}}, ()
-
-
-def remove_teacher(handler):
-    _ready()
-    _require_origin(handler)
-    data = read_body(handler, json_only=True)
-    uid = validate.text(data, 'id', 'Teacher', 40)
-    with db.connection() as conn:
-        _require_admin(handler, conn)
-        cur = db.execute(conn, "DELETE FROM sc_users WHERE id = ? AND role = 'teacher'", (uid,))
-        if cur.rowcount == 0:
-            raise ApiError(404, 'Teacher not found.')
-        db.execute(conn, 'DELETE FROM sc_sessions WHERE user_id = ?', (uid,))  # signs them out everywhere
-    return 200, {'ok': True}, ()
-
-
 # ---------------------------------------------------------------- smart-board QR pairing
-def pair_start(handler):
-    _ready()
-    _require_origin(handler)
+def pair_start(handler, query):
+    ready()
+    require_origin(handler)
     client = security.client_id(handler)
     now = int(time.time())
     code = secrets.token_urlsafe(18)
@@ -231,11 +230,12 @@ def pair_start(handler):
         db.execute(conn, 'DELETE FROM sc_pairs WHERE expires_at < ?', (now,))
         db.execute(conn, 'INSERT INTO sc_pairs (code, secret_hash, pin, expires_at) VALUES (?, ?, ?, ?)',
                    (code, _hash(secret), pin, now + PAIR_TTL_SECONDS))
+    # Send the lifetime, not a timestamp: the board's clock and the server's may differ
     return 201, {'ok': True, 'code': code, 'secret': secret, 'pin': pin, 'expiresIn': PAIR_TTL_SECONDS}, ()
 
 
 def pair_status(handler, query):
-    _ready()
+    ready()
     code = (query.get('code') or [''])[0][:80]
     secret = (query.get('secret') or [''])[0][:80]
     now = int(time.time())
@@ -250,23 +250,24 @@ def pair_status(handler, query):
         if not pair['user_id']:
             return 200, {'ok': True, 'status': 'pending'}, ()
         db.execute(conn, 'DELETE FROM sc_pairs WHERE code = ?', (code,))  # single use
-        user = db.fetch_one(conn, 'SELECT * FROM sc_users WHERE id = ?', (pair['user_id'],))
-        if not user:
+        user = db.fetch_one(conn, USER_SELECT + ' WHERE u.id = ?', (pair['user_id'],))
+        if not user or user['status'] != 'active':
             return 200, {'ok': True, 'status': 'expired'}, ()
         token = _new_session(conn, user['id'], 'board', BOARD_SESSION_SECONDS)
-    return 200, {'ok': True, 'status': 'approved', 'user': _public(user)}, (_cookie(token, BOARD_SESSION_SECONDS),)
+        audit(conn, user, 'sign_in', 'Smart board (QR)')
+    return 200, {'ok': True, 'status': 'approved', 'user': public_user(user)}, (_cookie(token, BOARD_SESSION_SECONDS),)
 
 
-def pair_approve(handler):
-    _ready()
-    _require_origin(handler)
+def pair_approve(handler, query):
+    ready()
+    require_origin(handler)
     data = read_body(handler, json_only=True)
     code = validate.text(data, 'code', 'Code', 80)
     pin = data.get('pin')
     if not isinstance(pin, str):
         raise ApiError(400, 'Type the code shown on the board.')
     with db.connection() as conn:
-        user = _current_user(handler, conn)
+        user = current_user(handler, conn)
         pair = db.fetch_one(conn, 'SELECT * FROM sc_pairs WHERE code = ?', (code,))
         if not pair or pair['expires_at'] < int(time.time()):
             raise ApiError(410, 'This QR code has expired. Scan the new one on the board.')
@@ -281,23 +282,23 @@ def pair_approve(handler):
 
 
 # ---------------------------------------------------------------- router
+CORE_ROUTES = {
+    ('GET', 'config'): get_config,
+    ('GET', 'me'): me,
+    ('GET', 'pair/status'): pair_status,
+    ('POST', 'google'): google_login,
+    ('POST', 'dev-login'): dev_login,
+    ('POST', 'logout'): logout,
+    ('POST', 'pair/start'): pair_start,
+    ('POST', 'pair/approve'): pair_approve,
+}
+
+
 def dispatch(handler, method):
+    from . import sc_data  # schools, classes, students, points (imports this module)
     query = parse_qs(urlsplit(handler.path).query)
     route = (query.get('r') or [''])[0]
-    routes = {
-        ('GET', 'config'): lambda: get_config(handler),
-        ('GET', 'me'): lambda: me(handler),
-        ('GET', 'teachers'): lambda: list_teachers(handler),
-        ('GET', 'pair/status'): lambda: pair_status(handler, query),
-        ('POST', 'google'): lambda: google_login(handler),
-        ('POST', 'dev-login'): lambda: dev_login(handler),
-        ('POST', 'logout'): lambda: logout(handler),
-        ('POST', 'teachers'): lambda: add_teacher(handler),
-        ('POST', 'teachers/remove'): lambda: remove_teacher(handler),
-        ('POST', 'pair/start'): lambda: pair_start(handler),
-        ('POST', 'pair/approve'): lambda: pair_approve(handler),
-    }
-    fn = routes.get((method, route))
+    fn = CORE_ROUTES.get((method, route)) or sc_data.ROUTES.get((method, route))
     if not fn:
         raise ApiError(404, 'Not found.')
-    return fn()
+    return fn(handler, query)
