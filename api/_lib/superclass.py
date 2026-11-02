@@ -231,7 +231,7 @@ def pair_start(handler):
         db.execute(conn, 'DELETE FROM sc_pairs WHERE expires_at < ?', (now,))
         db.execute(conn, 'INSERT INTO sc_pairs (code, secret_hash, pin, expires_at) VALUES (?, ?, ?, ?)',
                    (code, _hash(secret), pin, now + PAIR_TTL_SECONDS))
-    return 201, {'ok': True, 'code': code, 'secret': secret, 'pin': pin, 'expiresAt': (now + PAIR_TTL_SECONDS) * 1000}, ()
+    return 201, {'ok': True, 'code': code, 'secret': secret, 'pin': pin, 'expiresIn': PAIR_TTL_SECONDS}, ()
 
 
 def pair_status(handler, query):
