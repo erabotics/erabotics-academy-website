@@ -13,7 +13,7 @@ from . import db, validate
 from .superclass import audit, current_user, new_id, public_user, ready, require_origin, USER_SELECT
 from .web import ApiError, read_body
 
-DEFAULT_SETTINGS = {'warning_seconds': 5, 'drain_per_second': 1, 'board_text': 'Welcome to class!'}
+DEFAULT_SETTINGS = {'warning_seconds': 5, 'drain_per_second': 1, 'board_text': 'Welcome to class!', 'sounds': True}
 RANGES = {'today': 86400, 'week': 7 * 86400, 'month': 30 * 86400, 'term': 120 * 86400, 'all': None}
 MAX_PHOTO = 60_000          # characters of the data: URL (the app sends a ~128px JPEG)
 BIG_BODY = 400_000          # photos and CSV imports are larger than normal forms
@@ -154,6 +154,7 @@ def update_settings(handler, query):
         'warning_seconds': _int(data, 'warning_seconds', 3, 30, 5),
         'drain_per_second': _int(data, 'drain_per_second', 1, 5, 1),
         'board_text': validate.text(data, 'board_text', 'Whiteboard text', 60, required=False) or DEFAULT_SETTINGS['board_text'],
+        'sounds': data.get('sounds', True) is not False,
     }
     with db.connection() as conn:
         user = _staff(handler, conn)
