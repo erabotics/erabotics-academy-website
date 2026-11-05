@@ -199,7 +199,13 @@ def add_user(handler, query):
         sid = _school_id(conn, user, data.get('school_id'))
         if role == 'school_admin' and user['role'] != 'admin':
             raise ApiError(403, 'Only the platform admin can add school admins.')
-        if db.fetch_one(conn, 'SELECT id FROM sc_users WHERE email = ?', (email,)):
+        existing = db.fetch_one(conn, USER_SELECT + ' WHERE u.email = ?', (email,))
+        if existing:
+            if user['role'] == 'admin':
+                where = 'the platform admin' if existing['role'] == 'admin' else f"a {existing['role'].replace('_', ' ')} at {existing['school_name'] or 'no school'}"
+                raise ApiError(409, f'That email already has an account: {where} ({existing["status"]}).')
+            if existing['school_id'] == user['school_id']:
+                raise ApiError(409, 'That email is already in your staff list.')
             raise ApiError(409, 'That email already has an account.')
         uid = new_id()
         db.execute(conn, 'INSERT INTO sc_users (id, email, name, role, school_id, created_at) VALUES (?, ?, ?, ?, ?, ?)',
